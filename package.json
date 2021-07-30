@@ -1,0 +1,28 @@
+{
+  "name": "nftrail",
+  "version": "0.0.0",
+  "description": "Trace real-word assets through NFT Representations.",
+  "main": "index.js",
+  "scripts": {
+    "test": "hardhat test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ckoopmann/NFTrail.git"
+  },
+  "keywords": [
+    "NFT",
+    "IPFS",
+    "Filecoin",
+    "Web3"
+  ],
+  "author": "Christian Koopmann",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ckoopmann/NFTrail/issues"
+  },
+  "homepage": "https://github.com/ckoopmann/NFTrail#readme",
+  "dependencies": {
+    "hardhat": "^2.5.0"
+  }
+}
