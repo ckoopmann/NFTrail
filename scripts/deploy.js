@@ -18,7 +18,7 @@ async function main() {
   const nftrail = await NFTrail.deploy("NFTrail", "TRL");
   await nftrail.deployed();
 
-  console.log("NFTrail deployed to:", nft.address);
+  console.log("NFTrail deployed to:", nftrail.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
