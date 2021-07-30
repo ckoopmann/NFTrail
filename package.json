@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/ckoopmann/NFTrail#readme",
   "dependencies": {
+    "@openzeppelin/contracts": "^3.4.1",
     "hardhat": "^2.5.0"
   },
   "devDependencies": {
