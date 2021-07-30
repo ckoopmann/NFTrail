@@ -15,7 +15,7 @@ contract NFTrail is ERC721 {
         _setBaseURI("ipfs://");
     }
 
-    function mintToken(address owner, string memory metadataURI, string memory assetIdentifier)
+    function mintToken(address owner, string memory genesisMetadataURI, string memory assetIdentifier)
     public
     returns (uint256)
     {
@@ -24,7 +24,7 @@ contract NFTrail is ERC721 {
 
         uint256 id = _tokenIds.current();
         _safeMint(owner, id);
-        _setTokenURI(id, metadataURI);
+        _setTokenURI(id, genesisMetadataURI);
 
         return id;
     }

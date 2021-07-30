@@ -17,5 +17,9 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
+  namedAccounts: {
+    deployer: 0,
+    tokenRecipient: 1,
+  },
   solidity: "0.7.0",
 };
