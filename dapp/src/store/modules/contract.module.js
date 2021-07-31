@@ -1,4 +1,4 @@
-const contractName = "NFTrail"
+const contractName = "NFTrail";
 const abi = require(`../../contracts/abis/${contractName}.json`);
 const addresses = require(`../../contracts/addresses/${contractName}.json`);
 
@@ -39,7 +39,7 @@ const contractModule = {
       commit("setContractDeployed", false);
       const web3 = rootGetters["web3Module/web3Instance"];
       const networkId = rootGetters["web3Module/networkId"];
-      if(networkId in addresses){
+      if (networkId in addresses) {
         const address = addresses[networkId];
         console.log("using abi: ", abi);
         console.log("using address: ", address);
@@ -47,18 +47,17 @@ const contractModule = {
         console.log("setting contract to: ", contract);
         commit("setContractInstance", contract);
         commit("setContractDeployed", true);
-      }
-      else{
+      } else {
         console.log(`Contract is not deployed on network ${networkId}`);
-      } 
+      }
     },
   },
   getters: {
     contractInstance(state) {
       return state.contract;
     },
-    contractAddress(state){
-      if(state.contract != null){
+    contractAddress(state) {
+      if (state.contract != null) {
         return state.contract.options.address;
       }
       return null;
