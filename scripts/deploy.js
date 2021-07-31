@@ -4,7 +4,35 @@
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
 const hre = require("hardhat");
+const fs = require("fs");
 
+async function deployContract(contractName, constructorArgs) {
+  const abiPath = `dapp/src/contracts/abis/${contractName}.json`;
+  const addressPath = `dapp/src/contracts/addresses/${contractName}.json`;
+
+  const factory = await ethers.getContractFactory(contractName);
+  const contract = await factory.deploy(...constructorArgs);
+  await contract.deployed();
+  const { chainId } = await ethers.provider.getNetwork();
+
+  let addresses = {};
+  if (fs.existsSync(addressPath))
+    addresses = JSON.parse(fs.readFileSync(addressPath, "utf8"));
+
+  addresses[chainId] = contract.address;
+
+  fs.writeFileSync(addressPath, JSON.stringify(addresses, null, 2));
+  console.log(contract);
+
+  const readableAbi = contract.interface.format(ethers.utils.FormatTypes.full);
+  console.log("Readable Abi: ", readableAbi);
+  fs.writeFileSync(abiPath, JSON.stringify(readableAbi, null, 2));
+
+  console.log(
+    `${contractName} on network ${chainId} deployed to:`,
+    contract.address
+  );
+}
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.
@@ -14,11 +42,7 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const NFTrail = await ethers.getContractFactory("NFTrail");
-  const nftrail = await NFTrail.deploy("NFTrail", "TRL");
-  await nftrail.deployed();
-
-  console.log("NFTrail deployed to:", nftrail.address);
+  await deployContract("NFTrail", ["NFTrail", "TRL"]);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
