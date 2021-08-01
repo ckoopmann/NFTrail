@@ -58,7 +58,7 @@
         <scroll-icon @click="scrollToSection(2)" />
       </div>
     </section>
-    <e-section
+    <home-section
       id="aboutSection"
       data-section="about"
       :headline="$t('sections.about.title')"
@@ -211,7 +211,7 @@
           </p>
         </v-col>
       </v-row>
-    </e-section>
+    </home-section>
 
     <cols-section
       id="useCasesSection"
@@ -231,7 +231,7 @@
     >
     </cols-section>
 
-    <e-footer />
+    <the-footer />
 
     <scroll-to-top />
   </div>
@@ -248,8 +248,8 @@ import AnimateText from "@/components/custom/animate-text";
 import ScrollIcon from "@/components/custom/scroll-icon";
 import AnimatedBackground from "@/components/custom/animated-background";
 import ColsSection from "@/components/default/cols-section";
-import ESection from "@/components/default/e-section";
-import EFooter from "@/components/main/e-footer";
+import HomeSection from "@/components/default/HomeSection";
+import TheFooter from "@/components/main/TheFooter";
 
 import GlobalComputed from "@/helpers/global-computed";
 import GlobalMethods from "@/helpers/global-methods";
@@ -260,9 +260,9 @@ export default {
     ScrollToTop,
     AnimateText,
     ColsSection,
-    ESection,
+    HomeSection,
     ScrollIcon,
-    EFooter,
+    TheFooter,
     AnimatedBackground,
   },
   data() {

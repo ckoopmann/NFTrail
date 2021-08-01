@@ -1,5 +1,5 @@
 <template>
-  <e-section
+  <home-section
     :headline="headline"
     :subtitle="subtitle"
     :headline-icon="headlineIcon"
@@ -53,13 +53,13 @@
         </div>
       </v-col>
     </v-row>
-  </e-section>
+  </home-section>
 </template>
 
 <script>
 import GlobalComputed from "@/helpers/global-computed";
 import GlobalMethods from "@/helpers/global-methods";
-import ESection from "./e-section";
+import HomeSection from "./HomeSection";
 
 export default {
   props: [
@@ -74,7 +74,7 @@ export default {
   data() {
     return {};
   },
-  components: { ESection },
+  components: { HomeSection },
   computed: {
     ...GlobalComputed,
     style() {

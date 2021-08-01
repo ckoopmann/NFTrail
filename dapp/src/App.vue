@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <loading :loading="loading" />
-    <navbar :light-theme="lightNavbar" />
+    <the-navbar :light-theme="lightNavbar" />
 
     <v-main>
       <router-view />
@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import Navbar from "./components/main/navbar";
+import TheNavbar from "./components/main/TheNavbar";
 import Loading from "./components/default/loading";
 
 import GlobalComputed from "@/helpers/global-computed";
@@ -20,7 +20,7 @@ export default {
   name: "App",
 
   components: {
-    Navbar,
+    TheNavbar,
     Loading,
   },
   data: () => ({
