@@ -4,8 +4,8 @@
     :subtitle="subtitle"
     :headline-icon="headlineIcon"
     :style="style"
-    data-section="assetClasses"
     light
+    :data-section="dataSection"
     :background="background"
     :divider="!!divider"
   >
@@ -69,6 +69,7 @@ export default {
     "cols",
     "background",
     "divider",
+    "dataSection",
   ],
   data() {
     return {};

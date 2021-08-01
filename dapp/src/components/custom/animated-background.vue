@@ -18,7 +18,7 @@ export default {
     window.particlesJS("particles-js", {
       particles: {
         number: { value: count, density: { enable: false, value_area: 1000 } },
-        color: { value: "#015486" },
+        color: { value: "#021638" },
         shape: {
           type: "circle",
           stroke: { width: 0, color: "#015486" },

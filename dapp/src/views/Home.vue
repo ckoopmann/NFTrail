@@ -74,7 +74,7 @@
           class=""
         >
           <v-img
-            src="/img/vector1.png"
+            src="/assets/eth-diamond-purple.png"
             contain
             width="100%"
             max-height="320"
@@ -107,6 +107,7 @@
           </div>
         </v-col>
       </v-row>
+
       <v-row style="margin-top: 3.5rem" class="flex-row-reverse">
         <v-col
           :data-aos="pcOnly ? (isRtl ? 'fade-right' : 'fade-left') : 'fade-up'"
@@ -115,7 +116,7 @@
           class=""
         >
           <v-img
-            src="/img/vector2.png"
+            src="/assets/ipfs-logo-vector-ice.svg"
             contain
             width="100%"
             max-height="320"
@@ -135,7 +136,6 @@
           >
             {{ $t("sections.about.row2.content") }}
           </p>
-
           <div class="actions">
             <v-btn
               @click="navigateToLink('#industrySection')"
@@ -149,12 +149,84 @@
           </div>
         </v-col>
       </v-row>
+
+      <v-row>
+        <v-col
+          :data-aos="pcOnly ? (isRtl ? 'fade-left' : 'fade-right') : 'fade-up'"
+          data-aos-duration="800"
+          :cols="pcOnly ? 5 : 12"
+          class=""
+        >
+          <v-img
+            src="/assets/blind-justice.jpg"
+            contain
+            width="100%"
+            max-height="320"
+          ></v-img>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col
+          :data-aos="pcOnly ? (isRtl ? 'fade-right' : 'fade-left') : 'fade-up'"
+          data-aos-duration="800"
+          class="mt-6 mt-lg-0"
+          :cols="pcOnly ? 6 : 12"
+        >
+          <h1 class="headline">{{ $t("sections.about.row3.title") }}</h1>
+          <p
+            class="medium-text text-light--text mt-6 mt-lg-8"
+            :class="{ 'text-center': phoneOnly }"
+          >
+            {{ $t("sections.about.row3.content") }}
+          </p>
+        </v-col>
+      </v-row>
+
+      <v-row style="margin-top: 3.5rem" class="flex-row-reverse">
+        <v-col
+          :data-aos="pcOnly ? (isRtl ? 'fade-right' : 'fade-left') : 'fade-up'"
+          data-aos-duration="800"
+          :cols="pcOnly ? 5 : 12"
+          class=""
+        >
+          <v-img
+            src="/assets/hiking.jpg"
+            contain
+            width="100%"
+            max-height="320"
+          ></v-img>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col
+          :data-aos="pcOnly ? (isRtl ? 'fade-left' : 'fade-right') : 'fade-up'"
+          data-aos-duration="800"
+          class="mt-6 mt-lg-0"
+          :cols="pcOnly ? 6 : 12"
+        >
+          <h1 class="headline">{{ $t("sections.about.row4.title") }}</h1>
+          <p
+            class="medium-text text-light--text mt-6 mt-lg-8"
+            :class="{ 'text-center': phoneOnly }"
+          >
+            {{ $t("sections.about.row4.content") }}
+          </p>
+        </v-col>
+      </v-row>
     </e-section>
+
+    <cols-section
+      id="useCasesSection"
+      headline="Use cases"
+      subtitle="NFTrail tokens can support a variety of use cases / transactions"
+      data-section="useCases"
+      :cols="useCasesCols"
+    >
+    </cols-section>
 
     <cols-section
       id="assetClassesSection"
       headline="Asset Classes"
-      subtitle="You can track any type of asset you want"
+      subtitle="Use NFTrail to tokenize various different type of assets"
+      data-section="assetClasses"
       :cols="industriesCols"
     >
     </cols-section>
@@ -200,25 +272,53 @@ export default {
     };
   },
   computed: {
+    useCasesCols() {
+      return [
+        {
+          color: "blue",
+          icon: "mdi-cash-multiple",
+          headline: "Sale",
+          description:
+            "Bring transparency to various markets by proving ownership, maintenance record, registration etc. of the asset on sale.",
+        },
+        {
+          color: "deep-orange",
+          icon: "mdi-calendar-clock",
+          headline: "Lease",
+          description:
+            "Document lease agreements as well as the state of the asset at the beginning / end of the lease",
+        },
+        {
+          color: "teal",
+          icon: "mdi-shield-edit-outline",
+          headline: "Insurance",
+          description:
+            "Support quoting / claims management by documenting damages on chain.",
+        },
+      ];
+    },
     industriesCols() {
       return [
         {
           color: "blue",
-          icon: "mdi-cart-outline",
+          icon: "mdi-car-outline",
           headline: "Vehicles",
-          description: "Mange your Vehicles",
+          description:
+            "Document changes in ownership, registration, maintenance and inspection of you vehicle.",
         },
         {
           color: "deep-orange",
-          icon: "mdi-currency-usd-circle-outline",
+          icon: "mdi-home-outline",
           headline: "Real Estate",
-          description: "Manage your Real Estate",
+          description:
+            "Register your property on chain and keep track of appraisals, building permits and much more.",
         },
         {
           color: "teal",
-          icon: "mdi-store",
+          icon: "mdi-brush",
           headline: "Art",
-          description: "Manage your Art",
+          description:
+            "Tokenize your real-word masterpieces and manage documents regarding authenticity, restoration etc.",
         },
       ];
     },
@@ -245,7 +345,6 @@ export default {
 
         if (scrollTop >= offsetTop && scrollTop < offsetBottom) {
           let sectionName = section.getAttribute("data-section");
-          console.log("Handling scroll change for ", sectionName);
           if (sectionName) {
             this.$store.commit("SET_ACTIVE_SECTION", sectionName);
           }
@@ -351,11 +450,11 @@ section {
         "sections": {
             "1": {
                 "title": "NFTrail",
-                "subtitle": "Track any real world asset on chain"
+                "subtitle": "Create an on-chain document trail for your off-chain assets."
             },
             "about": {
                 "title": "About",
-                "subtitle": "What is NFTrail ?",
+                "subtitle": "Combine NFTs and IPFS document storage to keep track of your assets.",
                 "row1": {
                     "title": "Tokenize your physical assets",
                     "content": "Mint an ERC-721 Token representing the asset you wish to track.",
@@ -365,6 +464,14 @@ section {
                     "title": "Manage Documents on IPFS",
                     "content": "Upload documentation regarding your asset such as Contracts, Maintenance Record etc. to IPFS and link it to your NFT.",
                     "action": "Learn more about IPFS"
+                },
+                "row3": {
+                    "title": "Prove / Verify asset properties",
+                    "content": "Being immutable and publicly accesible the asset token including the associated Documents can be used to prove ownership and various other attributes of the underlying asset such as maintenance record etc."
+                },
+                "row4": {
+                    "title": "Take your Token anywhere",
+                    "content": "As a ERC-721 token you can use the NFTrail Token anywhere in the blockhain NFT-Ecosystem (OpenSea etc.)"
                 }
             },
             "actions": {
