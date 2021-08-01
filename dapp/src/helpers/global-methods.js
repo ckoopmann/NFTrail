@@ -1,6 +1,12 @@
 export default {
   scrollToElement(el, duration = 700) {
     let scrollTop = el.offsetTop - this.navbarHeight;
+
+    let sectionName = el.getAttribute("data-section");
+    if (sectionName != null) {
+      this.$store.commit("SET_ACTIVE_SECTION", sectionName);
+    }
+
     this.$vuetify.goTo(scrollTop, {
       duration: duration,
       container: document.documentElement,

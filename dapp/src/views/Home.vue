@@ -63,7 +63,6 @@
       data-section="about"
       :headline="$t('sections.about.title')"
       :subtitle="$t('sections.about.subtitle')"
-      :cols="section2Columns"
       light
       divider
     >
