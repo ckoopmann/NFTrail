@@ -4,7 +4,6 @@
     :subtitle="subtitle"
     :headline-icon="headlineIcon"
     :style="style"
-    light
     :data-section="dataSection"
     :background="background"
     :divider="!!divider"

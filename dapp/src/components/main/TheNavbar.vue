@@ -36,7 +36,9 @@
             >
           </div>
 
-          <div class="d-flex align-center ms-8"></div>
+          <div class="d-flex align-center ms-8">
+            <app-button :large="pcOnly" />
+          </div>
         </div>
       </v-slide-x-reverse-transition>
     </v-container>
@@ -49,10 +51,11 @@ import Logo from "./logo";
 import GlobalComputed from "@/helpers/global-computed";
 import GlobalMethods from "@/helpers/global-methods";
 import links from "@/helpers/links";
+import AppButton from "../custom/AppButton.vue";
 
 export default {
   name: "navbar",
-  components: { Logo },
+  components: { Logo, AppButton },
   props: {
     lightTheme: {
       type: Boolean,
@@ -115,5 +118,8 @@ export default {
     text-transform: capitalize;
     letter-spacing: 1.1px;
   }
+}
+body {
+  background-color: black;
 }
 </style>

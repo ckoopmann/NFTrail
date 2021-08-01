@@ -1,32 +1,19 @@
 <template>
-  <v-menu offset-y :transition="transition">
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn
-        tile
-        outlined
-        :icon="icon"
-        :block="block"
-        :class="{ surface2: !text }"
-        :large="large"
-        text
-        v-bind="attrs"
-        v-on="on"
-      >
-        <v-icon class="me-2" :size="20">mdi-earth</v-icon>
-        <span v-if="!icon">{{ currentLang }}</span>
-        <v-icon v-if="dropdownIcon" right>mdi-menu-down</v-icon>
-      </v-btn>
-    </template>
-    <v-list color="surface2">
-      <v-list-item
-        v-for="(lang, index) in langs"
-        :key="index"
-        @click="changeLocale(lang.value)"
-      >
-        <v-list-item-title>{{ lang.text }}</v-list-item-title>
-      </v-list-item>
-    </v-list>
-  </v-menu>
+  <v-btn
+    tile
+    outlined
+    :icon="icon"
+    :block="block"
+    :class="{ surface2: !text }"
+    :large="large"
+    text
+    v-bind="attrs"
+    v-on="on"
+    to="app"
+  >
+    <v-icon class="me-2" :size="20">mdi-earth</v-icon>
+    <span v-if="!icon">{{ currentLang }}</span>
+  </v-btn>
 </template>
 
 <script>
