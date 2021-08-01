@@ -34,7 +34,7 @@ const web3Module = {
   actions: {
     async initializeWeb3({ commit }) {
       if (window.ethereum) {
-        await ethereum.enable();
+        await window.ethereum.enable();
         commit("setWalletConnected", true);
         let web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
         commit("setWeb3Instance", web3);
@@ -48,13 +48,11 @@ const web3Module = {
 
         let networkType = await web3.eth.net.getNetworkType();
         commit("setNetworkType", networkType);
-      }
-      else{
+      } else {
         commit("setWalletConnected", false);
       }
-
     },
-    async registerUpdateListener({ getters, dispatch }) {
+    async registerUpdateListener({ dispatch }) {
       console.log("Current Provider:", window.ethereum);
       window.ethereum.on("accountsChanged", async () => {
         console.log("Detected account update");
