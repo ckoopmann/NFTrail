@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import LandingPage from "../LandingPage.vue";
 import Home from "../views/Home.vue"
+import TheDapp from "../TheDapp.vue"
 
 Vue.use(VueRouter);
 
@@ -13,6 +14,11 @@ const routes = [
       children: [
         { path: "", name: "home", component: Home },
       ],
+  },
+  {
+    path: "/dapp",
+    name: "dapp",
+    component: TheDapp,
   },
 ];
 
