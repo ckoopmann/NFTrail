@@ -15,8 +15,10 @@ export default {
   },
   methods: {
     ...mapActions("web3Module", ["connectWallet", "registerUpdateListener"]),
+    ...mapActions("contractModule", ["initializeContract"]),
     async connectAndRegisterListeners() {
       await this.connectWallet();
+      await this.initializeContract();
       await this.registerUpdateListener();
     },
   },
