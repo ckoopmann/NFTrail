@@ -19,6 +19,9 @@
           <logo :light="light" :width="pcOnly ? 140 : 125" />
         </div>
         <v-spacer />
+        <div v-if="isConnected" :title="selectedAccount" class="connected">
+          Connected: {{ selectedAccount }}
+        </div>
         <v-slide-x-reverse-transition appear>
           <div class="d-flex">
             <div class="d-flex align-center ms-8">
@@ -28,23 +31,6 @@
         </v-slide-x-reverse-transition>
       </v-container>
     </v-app-bar>
-    <div v-if="walletConnected">
-      <v-alert v-if="contractDeployed" color="green" class="mb-0" dense>
-        Succesfully connected to the contract (<a :href="etherScanLink"
-          >etherscan</a
-        >).
-      </v-alert>
-      <v-alert v-else color="red lighten-2" class="mb-0" dense>
-        Contract is not deployed on {{ networkType }} network please switch your
-        network to the Rinkeby Test-Network.
-      </v-alert>
-    </div>
-    <v-alert v-else color="red lighten-2" class="mb-0" dense>
-      You do not seem to have Metamask connected to this site. To use this
-      application you will have to
-      <a href="https://metamask.io/download">install Metamask</a> and reload the
-      page.
-    </v-alert>
   </div>
 </template>
 
@@ -75,7 +61,7 @@ export default {
   },
   computed: {
     ...mapGetters("contractModule", ["contractDeployed", "contractAddress"]),
-    ...mapGetters("web3Module", ["networkType", "walletConnected"]),
+    ...mapGetters("web3Module", ["isConnected", "selectedAccount"]),
     etherScanLink() {
       return `https://rinkeby.etherscan.io/address/${this.contractAddress}`;
     },
@@ -130,5 +116,17 @@ export default {
 }
 body {
   background-color: black;
+}
+
+.connected {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: #ffffff11;
+  margin: 0 10px;
+  padding: 6px 15px;
+  border-radius: 15px;
+  cursor: pointer;
 }
 </style>
