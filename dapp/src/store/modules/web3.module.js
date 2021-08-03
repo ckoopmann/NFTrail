@@ -32,7 +32,7 @@ const web3Module = {
     },
   },
   actions: {
-    async initializeWeb3({ commit }) {
+    async connectWallet({ commit }) {
       if (window.ethereum) {
         await window.ethereum.enable();
         commit("setWalletConnected", true);
@@ -56,12 +56,12 @@ const web3Module = {
       console.log("Current Provider:", window.ethereum);
       window.ethereum.on("accountsChanged", async () => {
         console.log("Detected account update");
-        await dispatch("initializeWeb3");
+        await dispatch("connectWallet");
         await dispatch("contractModule/initializeContract", {}, { root: true });
       });
       window.ethereum.on("chainChanged", async () => {
         console.log("Detected network update");
-        await dispatch("initializeWeb3");
+        await dispatch("connectWallet");
         await dispatch("contractModule/initializeContract", {}, { root: true });
       });
     },
