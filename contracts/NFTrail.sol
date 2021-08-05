@@ -23,6 +23,7 @@ contract NFTrail is ERC721 {
         _tokenIds.increment();
 
         uint256 id = _tokenIds.current();
+        assetIdentifierIdMapping[assetIdentifier] = id;
         _safeMint(owner, id);
         _setTokenURI(id, genesisMetadataURI);
 
