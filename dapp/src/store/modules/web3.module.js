@@ -1,86 +1,152 @@
-const Web3 = require("web3");
+import Web3modal from "web3modal";
+import { ethers } from "ethers";
+
+let web3Modal;
+let currentProvider;
+
+function initializeModal() {
+  // window must be available so we delay instantiating till later
+  if (!web3Modal)
+    web3Modal = new Web3modal({
+      network: "kovan",
+      cacheProvider: false,
+    });
+  return web3Modal;
+}
+
+export const getCurrentProvider = () => {
+  return currentProvider;
+};
 
 const web3Module = {
   namespaced: true,
   state: {
-    web3: null,
-    activeAccount: null,
-    networkId: null,
-    networkType: "",
-    walletConnected: false,
+    isConnected: false,
+    modalInitializing: false,
+    providerSet: false,
+    networkInfo: { name: "", chainId: -1 },
+    correctNetwork: "kovan",
+    activeNetwork: "",
+    selectedAccount: "",
+    blockTimestamp: 0,
   },
   mutations: {
-    setWeb3Instance(state, web3) {
-      console.log("Setting web3 instance to: ", web3);
-      state.web3 = web3;
+    setNetworkInfo(state, networkInfo) {
+      const provider = getCurrentProvider()?.provider;
+      const metamaskProvider = provider;
+      state.selectedAccount = metamaskProvider.selectedAddress ?? "";
+      state.networkInfo = networkInfo;
+      state.activeNetwork = networkInfo.name;
     },
-    setActiveAccount(state, activeAccount) {
-      console.log("Setting active account to: ", activeAccount);
-      state.activeAccount = activeAccount;
+    setSelectedAccount(state, address) {
+      state.selectedAccount = address;
     },
-    setNetworkId(state, networkId) {
-      console.log("Setting network id to: ", networkId);
-      state.networkId = networkId;
+    setConnectionStatus(state, connectionState) {
+      state.isConnected = connectionState;
     },
-    setNetworkType(state, networkType) {
-      console.log("Setting network type to: ", networkType);
-      state.networkType = networkType;
+    setEthersProvider(state, provider) {
+      try {
+        currentProvider = new ethers.providers.Web3Provider(provider);
+        state.providerSet = true;
+      } catch (e) {
+        console.log(
+          "error converting to web3Provider to ethersProvider: %s",
+          provider
+        );
+        state.providerSet = false;
+      }
     },
-    setWalletConnected(state, walletConnected) {
-      console.log("Setting network type to: ", walletConnected);
-      state.walletConnected = walletConnected;
+    setModalInitializing(state) {
+      state.modalInitializing = state;
+    },
+    clearProvider(state) {
+      currentProvider = undefined;
+      state.providerSet = false;
+      state.isConnected = false;
+    },
+    setBlockTimestamp(state, timestamp) {
+      state.blockTimestamp = timestamp;
     },
   },
   actions: {
-    async initializeWeb3({ commit }) {
-      if (window.ethereum) {
-        await window.ethereum.enable();
-        commit("setWalletConnected", true);
-        let web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
-        commit("setWeb3Instance", web3);
+    clearProvider(context) {
+      context.commit("clearProvider");
+    },
+    registerListeners(context, metamaskProvider) {
+      if (metamaskProvider.isMetaMask) {
+        console.log("Registering account listener");
+        metamaskProvider.on("accountsChanged", async (accounts) => {
+          const account = accounts[0];
+          console.log("Detected account update: %s", account);
+          context.commit("setSelectedAccount", account);
+          // await context.dispatch(
+          //   "contracts/updateContractData",
+          //   {},
+          //   { root: true }
+          // );
+        });
 
-        let accounts = await web3.eth.getAccounts();
-        console.log("Active Acount from inside vuex store: ", accounts[0]);
-        commit("setActiveAccount", accounts[0]);
-
-        let networkId = await web3.eth.net.getId();
-        commit("setNetworkId", networkId);
-
-        let networkType = await web3.eth.net.getNetworkType();
-        commit("setNetworkType", networkType);
-      } else {
-        commit("setWalletConnected", false);
+        // Note that this will not be triggered if we change between networks with the same chain id
+        // Tried this but did not work: https://docs.ethers.io/v5/concepts/best-practices/#best-practices
+        metamaskProvider.on("chainChanged", () => {
+          console.log("Detected network change, reload page");
+          window.location.reload();
+        });
+      }
+      const ethersProvider = new ethers.providers.Web3Provider(
+        metamaskProvider
+      );
+      ethersProvider.on("block", async (blockNumber) => {
+        const block = await ethersProvider.getBlock(blockNumber);
+        console.log("Block timestamp:", block.timestamp);
+        context.commit("setBlockTimestamp", block.timestamp);
+      });
+    },
+    async connectWeb3(context) {
+      context.commit("setModalInitializing", true);
+      const webModal = initializeModal();
+      let provider;
+      try {
+        provider = await webModal.connect();
+        context.commit("setEthersProvider", provider);
+        context.commit("setConnectionStatus", true);
+        await context.dispatch("registerListeners", provider);
+        await context.dispatch("updateNetworkInfo");
+      } catch (e) {
+        console.log("Error connecting to Web3");
+        context.commit("setConnectionStatus", false);
+      } finally {
+        context.commit("setModalInitializing", false);
       }
     },
-    async registerUpdateListener({ dispatch }) {
-      console.log("Current Provider:", window.ethereum);
-      window.ethereum.on("accountsChanged", async () => {
-        console.log("Detected account update");
-        await dispatch("initializeWeb3");
-        await dispatch("contractModule/initializeContract", {}, { root: true });
-      });
-      window.ethereum.on("chainChanged", async () => {
-        console.log("Detected network update");
-        await dispatch("initializeWeb3");
-        await dispatch("contractModule/initializeContract", {}, { root: true });
-      });
+    async updateNetworkInfo(context) {
+      const ethersWeb3Provider = getCurrentProvider();
+      if (context.state.providerSet && ethersWeb3Provider) {
+        const networkInfo = await ethersWeb3Provider.getNetwork();
+        context.commit("setNetworkInfo", networkInfo);
+      }
     },
   },
   getters: {
-    web3Instance(state) {
-      return state.web3;
+    onCorrectNetwork(state) {
+      return state.networkInfo.name === state.correctNetwork;
     },
-    activeAccount(state) {
-      return state.activeAccount;
+    networkId(state){
+      return state.networkInfo.chainId;
     },
-    networkId(state) {
-      return state.networkId;
+    signer(state) {
+      const modalProvider = getCurrentProvider();
+      if (modalProvider !== undefined) {
+        return modalProvider.getSigner(state.selectedAccount);
+      } else {
+        return undefined;
+      }
     },
-    networkType(state) {
-      return state.networkType;
+    selectedAccount(state) {
+      return state.selectedAccount;
     },
-    walletConnected(state) {
-      return state.walletConnected;
+    isConnected(state) {
+      return state.isConnected;
     },
   },
 };
