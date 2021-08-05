@@ -50,6 +50,8 @@ export default {
   data() {
     return {
       loading: false,
+      genesisDocumentCID: "",
+      assetIdentifier: "",
     };
   },
   methods: {
@@ -62,7 +64,8 @@ export default {
           genesisDocumentCID: this.genesisDocumentCID,
           assetIdentifier: this.assetIdentifier,
         });
-        this.dialog = false;
+        this.genesisDocumentCID = "";
+        this.assetIdentifier = "";
       } catch (e) {
         console.error("Mint failed with exception: ", e);
       } finally {
