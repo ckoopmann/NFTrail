@@ -37,7 +37,6 @@
             :key="i"
             :to="item.to"
             router
-            append
             exact
           >
             <v-list-item-action>
@@ -77,7 +76,7 @@ export default {
       scrolled: false,
       clipped: true,
       drawer: false,
-      items: [{ icon: "mdi-folder-plus", title: "New Asset Token", to: "new" }],
+      items: [{ icon: "mdi-folder-plus", title: "New Asset Token", to: "/dapp/new" }],
     };
   },
   computed: {

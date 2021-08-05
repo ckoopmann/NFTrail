@@ -40,6 +40,19 @@ const contractModule = {
         }
       }
     },
+  async mintNFT({rootGetters}, {genesisDocumentCID, assetIdentifier}) {
+    const signer = rootGetters["web3Module/signer"]
+    const owner = rootGetters["web3Module/selectedAccount"]
+    console.log(`Mintin token with identifier ${assetIdentifier} and genesisCID ${genesisDocumentCID} for owner ${owner}`)
+    console.log("Using signer: ", signer)
+    if (signer !== undefined) {
+      const signerContract = nftContract.connect(signer)
+      const mintTx = await signerContract.mintToken(owner, genesisDocumentCID, assetIdentifier)
+      const result = await mintTx.wait()
+      console.log(`Token minted`, result)
+    }
+  }
+
   },
   getters: {
     contractInstance() {
