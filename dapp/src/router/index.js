@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import LandingPage from "../LandingPage.vue";
 import Home from "../views/Home.vue"
 import TheDapp from "../TheDapp.vue"
+import NewToken from "../views/NewToken.vue"
 
 Vue.use(VueRouter);
 
@@ -19,6 +20,9 @@ const routes = [
     path: "/dapp",
     name: "dapp",
     component: TheDapp,
+      children: [
+        { path: "new", name: "newToken", component: NewToken },
+      ],
   },
 ];
 

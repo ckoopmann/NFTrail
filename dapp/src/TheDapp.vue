@@ -31,12 +31,13 @@
         class="navigationdrawer"
         stateless
       >
-        <v-list>
+        <v-list v-if="isConnected">
           <v-list-item
             v-for="(item, i) in items"
             :key="i"
             :to="item.to"
             router
+            append
             exact
           >
             <v-list-item-action>
@@ -47,7 +48,11 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
+        <div v-else class="p-6 m-6">
+          Please Connect your wallet to use the app
+        </div>
       </v-navigation-drawer>
+      <router-view />
     </v-main>
   </v-app>
 </template>
@@ -72,7 +77,7 @@ export default {
       scrolled: false,
       clipped: true,
       drawer: false,
-      items: [{ icon: "mdi-document", title: "Test" }],
+      items: [{ icon: "mdi-folder-plus", title: "New Asset Token", to: "new" }],
     };
   },
   computed: {
