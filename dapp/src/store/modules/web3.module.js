@@ -131,6 +131,9 @@ const web3Module = {
     onCorrectNetwork(state) {
       return state.networkInfo.name === state.correctNetwork;
     },
+    networkId(state){
+      return state.networkInfo.chainId;
+    },
     signer(state) {
       const modalProvider = getCurrentProvider();
       if (modalProvider !== undefined) {

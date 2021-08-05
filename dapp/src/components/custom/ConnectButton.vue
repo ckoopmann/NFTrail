@@ -22,10 +22,12 @@ export default {
   },
   methods: {
     ...mapActions("web3Module", ["connectWeb3", "clearProvider"]),
+    ...mapActions("contractModule", ["initializeContract"]),
     async connect() {
       this.loading = true;
       try {
         await this.connectWeb3();
+        await this.initializeContract();
       } finally {
         this.loading = false;
       }

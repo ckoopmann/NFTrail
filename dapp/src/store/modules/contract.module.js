@@ -1,66 +1,52 @@
+import { getCurrentProvider } from "./web3.module";
+import { ethers } from "ethers";
+
 const contractName = "NFTrail";
 const abi = require(`../../contracts/abis/${contractName}.json`);
 const addresses = require(`../../contracts/addresses/${contractName}.json`);
 
+
+let nftContract;
 const contractModule = {
   namespaced: true,
   name: "contract",
   state: {
-    contract: null,
-    gameDataLoaded: false,
-    gameIds: [],
-    gameData: {},
-    gameLoadingStates: {},
     contractDeployed: false,
   },
   mutations: {
-    setContractInstance(state, contractInstance) {
-      state.contract = contractInstance;
-    },
-    setGameIds(state, gameIds) {
-      state.gameIds = gameIds;
-    },
-    setGameData(state, { gameId, gameData }) {
-      console.log("Adding Game Data: ", gameId, gameData);
-      if (!state.gameIds.includes(gameId)) {
-        state.gameIds = [gameId, ...state.gameIds];
-      }
-      state.gameData[gameId] = gameData;
-    },
-    setGameDataLoaded(state, loadingFlag) {
-      state.gameDataLoaded = loadingFlag;
-    },
     setContractDeployed(state, contractDeployed) {
       state.contractDeployed = contractDeployed;
     },
   },
   actions: {
-    initializeContract({ commit, rootGetters }) {
+    async initializeContract({ commit, rootGetters }) {
       commit("setContractDeployed", false);
-      const web3 = rootGetters["web3Module/web3Instance"];
       const networkId = rootGetters["web3Module/networkId"];
-      if (networkId in addresses) {
-        const address = addresses[networkId];
-        console.log("using abi: ", abi);
-        console.log("using address: ", address);
-        const contract = new web3.eth.Contract(abi, address);
-        console.log("setting contract to: ", contract);
-        commit("setContractInstance", contract);
-        commit("setContractDeployed", true);
+      const provider = getCurrentProvider();
+      if (provider === undefined) {
+        throw new Error("Provider is undefined - Cannot initialize contract");
       } else {
-        console.log(`Contract is not deployed on network ${networkId}`);
+        if (networkId in addresses) {
+          nftContract = new ethers.Contract(
+            addresses[networkId],
+            abi,
+            provider
+          );
+          // Will throw an error if contract is not deployed on current network
+          await nftContract.deployed();
+          console.log("Connected to contract at: ", addresses[networkId]);
+        } else {
+          console.error("Contract is not deployed on networkId ", networkId);
+        }
       }
     },
   },
   getters: {
-    contractInstance(state) {
-      return state.contract;
+    contractInstance() {
+      return nftContract;
     },
-    contractAddress(state) {
-      if (state.contract != null) {
-        return state.contract.options.address;
-      }
-      return null;
+    contractAddress() {
+      return nftContract?.address;
     },
     contractDeployed(state) {
       return state.contractDeployed;

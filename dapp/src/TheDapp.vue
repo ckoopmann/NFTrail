@@ -1,28 +1,107 @@
 <template>
   <v-app>
     <loading :loading="loading" />
-    <the-dapp-navbar :light-theme="lightNavbar" />
+    <v-app-bar :clipped-left="clipped" app fixed>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+
+      <v-container class="d-flex align-center">
+        <div>
+          <!-- logo -->
+          <logo :light="light" :width="pcOnly ? 140 : 125" />
+        </div>
+        <v-spacer />
+        <div v-if="isConnected" :title="selectedAccount" class="connected">
+          Connected: {{ selectedAccount }}
+        </div>
+        <v-slide-x-reverse-transition appear>
+          <div class="d-flex">
+            <div class="d-flex align-center ms-8">
+              <connect-button :large="pcOnly" />
+            </div>
+          </div>
+        </v-slide-x-reverse-transition>
+      </v-container>
+    </v-app-bar>
 
     <v-main>
+      <v-navigation-drawer
+        v-model="drawer"
+        :clipped="clipped"
+        app
+        class="navigationdrawer"
+        stateless
+      >
+        <v-list>
+          <v-list-item
+            v-for="(item, i) in items"
+            :key="i"
+            :to="item.to"
+            router
+            exact
+          >
+            <v-list-item-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title" />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import TheDappNavbar from "./components/main/TheDappNavbar";
 import Loading from "./components/default/loading";
+
+import { mapGetters } from "vuex";
+
+import GlobalComputed from "@/helpers/global-computed";
+import GlobalMethods from "@/helpers/global-methods";
+
+import ConnectButton from "./components/custom/ConnectButton.vue";
+import Logo from "./components/main/logo.vue";
 
 export default {
   name: "App",
+  components: { Logo, ConnectButton, Loading },
 
-  components: {
-    TheDappNavbar,
-    Loading,
+  data() {
+    return {
+      scrolled: false,
+      clipped: true,
+      drawer: false,
+      items: [{ icon: "mdi-document", title: "Test" }],
+    };
+  },
+  computed: {
+    ...mapGetters("contractModule", ["contractDeployed", "contractAddress"]),
+    ...mapGetters("web3Module", ["isConnected", "selectedAccount"]),
+    etherScanLink() {
+      return `https://rinkeby.etherscan.io/address/${this.contractAddress}`;
+    },
+    light() {
+      return this.lightTheme && this.scrolled;
+    },
+    activeSection() {
+      return this.$store.state.activeSection;
+    },
+    ...GlobalComputed,
+  },
+  methods: {
+    handleScroll() {
+      this.scrolled = window.scrollY > 0;
+    },
+
+    ...GlobalMethods,
   },
   mounted() {
     window.setTimeout(() => {
       this.$store.commit("SET_LOADING", false);
     }, 500);
+    window.addEventListener("scroll", this.handleScroll);
+    this.handleScroll();
   },
 };
 </script>
@@ -196,5 +275,47 @@ html,
   opacity: 1;
   transform: none;
   transition: opacity 1s ease-in, transform 0.5s ease-out;
+}
+
+.v-application .navbar {
+  &,
+  .v-toolbar__content {
+    transition: height 0.2s ease-out, background-color 0.1s linear !important;
+  }
+  &.soft-shadow {
+    box-shadow: 0 0 transparent, 0 0 transparent,
+      0 5px 5px -4px rgba(0, 0, 0, 0.1) !important;
+  }
+  &.dark-gradient {
+    box-shadow: 0 1px 8px 0px rgba(0, 0, 0, 0.2) !important;
+  }
+  &.blank {
+    &,
+    .v-toolbar__content {
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+  }
+  .v-btn {
+    font-weight: normal !important;
+    text-transform: capitalize;
+    letter-spacing: 1.1px;
+  }
+}
+body {
+  background-color: black;
+}
+
+.connected {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: #ffffff11;
+  margin: 0 10px;
+  padding: 6px 15px;
+  border-radius: 15px;
+  cursor: pointer;
 }
 </style>
