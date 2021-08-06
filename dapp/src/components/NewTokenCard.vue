@@ -66,7 +66,6 @@ export default {
         });
         this.genesisDocumentCID = "";
         this.assetIdentifier = "";
-        await this.loadOwnedIds();
       } catch (e) {
         console.error("Mint failed with exception: ", e);
       } finally {
