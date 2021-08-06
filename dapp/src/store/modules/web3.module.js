@@ -131,7 +131,7 @@ const web3Module = {
     onCorrectNetwork(state) {
       return state.networkInfo.name === state.correctNetwork;
     },
-    networkId(state){
+    networkId(state) {
       return state.networkInfo.chainId;
     },
     signer(state) {

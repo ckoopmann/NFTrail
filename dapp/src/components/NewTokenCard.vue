@@ -55,7 +55,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions("contractModule", ["mintNFT"]),
+    ...mapActions("contractModule", ["mintNFT", "loadOwnedIds"]),
     async mint() {
       try {
         this.loading = true;
@@ -66,6 +66,7 @@ export default {
         });
         this.genesisDocumentCID = "";
         this.assetIdentifier = "";
+        await this.loadOwnedIds();
       } catch (e) {
         console.error("Mint failed with exception: ", e);
       } finally {

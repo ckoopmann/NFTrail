@@ -5,17 +5,20 @@ const contractName = "NFTrail";
 const abi = require(`../../contracts/abis/${contractName}.json`);
 const addresses = require(`../../contracts/addresses/${contractName}.json`);
 
-
 let nftContract;
 const contractModule = {
   namespaced: true,
   name: "contract",
   state: {
     contractDeployed: false,
+    ownedIds: [],
   },
   mutations: {
     setContractDeployed(state, contractDeployed) {
       state.contractDeployed = contractDeployed;
+    },
+    setOwnedIds(state, ownedIds) {
+      state.ownedIds = ownedIds;
     },
   },
   actions: {
@@ -40,19 +43,56 @@ const contractModule = {
         }
       }
     },
-  async mintNFT({rootGetters}, {genesisDocumentCID, assetIdentifier}) {
-    const signer = rootGetters["web3Module/signer"]
-    const owner = rootGetters["web3Module/selectedAccount"]
-    console.log(`Mintin token with identifier ${assetIdentifier} and genesisCID ${genesisDocumentCID} for owner ${owner}`)
-    console.log("Using signer: ", signer)
-    if (signer !== undefined) {
-      const signerContract = nftContract.connect(signer)
-      const mintTx = await signerContract.mintToken(owner, genesisDocumentCID, assetIdentifier)
-      const result = await mintTx.wait()
-      console.log(`Token minted`, result)
-    }
-  }
+    async registerListeners() {
+      nftContract.on("Transfer", (from, to , id) => {
+        // Emitted whenever a DAI token transfer occurs
+        console.log("Detected transfer event", from, to, id);
+      });
+    },
+    async mintNFT({ rootGetters }, { genesisDocumentCID, assetIdentifier }) {
+      const signer = rootGetters["web3Module/signer"];
+      const owner = rootGetters["web3Module/selectedAccount"];
+      console.log(
+        `Mintin token with identifier ${assetIdentifier} and genesisCID ${genesisDocumentCID} for owner ${owner}`
+      );
+      console.log("Using signer: ", signer);
+      if (signer !== undefined) {
+        const signerContract = nftContract.connect(signer);
+        const mintTx = await signerContract.mintToken(
+          owner,
+          genesisDocumentCID,
+          assetIdentifier
+        );
+        const result = await mintTx.wait();
+        console.log(`Token minted`, result);
+      }
+    },
 
+    async loadOwnedIds({ commit, rootGetters }) {
+      const activeAccount = rootGetters["web3Module/selectedAccount"];
+      const totalSupply = await nftContract.callStatic.totalSupply();
+      console.log(
+        `Total Supply: ${totalSupply}, ActieAccount: ${activeAccount}`
+      );
+      const ownedIDs = [];
+      let owner;
+      for (let id = 1; id < totalSupply.toNumber() + 1; id++) {
+        console.log(`Checking Owner of asset ${id}`);
+        owner = await nftContract.callStatic.ownerOf(id);
+        console.log(`Owner of asset ${id}: `, owner);
+        if (
+          ethers.utils.getAddress(owner) ===
+          ethers.utils.getAddress(activeAccount)
+        ) {
+          const assetIdentifier = await nftContract.callStatic.getAssetIdentifier(
+            id
+          );
+          ownedIDs.push({ id, assetIdentifier });
+          console.log("Owner and active account", owner, activeAccount);
+        }
+      }
+      commit("setOwnedIds", ownedIDs);
+    },
   },
   getters: {
     contractInstance() {

@@ -1,5 +1,11 @@
 <template>
-  <v-btn v-if="!isConnected" large rounded color="#36adb5" @click="triggerAction">
+  <v-btn
+    v-if="!isConnected"
+    large
+    rounded
+    color="#36adb5"
+    @click="triggerAction"
+  >
     <v-icon class="me-2" :size="20">mdi-link</v-icon>
     <span>Connect</span>
   </v-btn>
@@ -22,12 +28,18 @@ export default {
   },
   methods: {
     ...mapActions("web3Module", ["connectWeb3", "clearProvider"]),
-    ...mapActions("contractModule", ["initializeContract"]),
+    ...mapActions("contractModule", [
+      "initializeContract",
+      "registerListeners",
+      "loadOwnedIds",
+    ]),
     async connect() {
       this.loading = true;
       try {
         await this.connectWeb3();
         await this.initializeContract();
+        await this.registerListeners();
+        await this.loadOwnedIds();
       } finally {
         this.loading = false;
       }
