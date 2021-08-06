@@ -114,6 +114,9 @@ const contractModule = {
     contractDeployed(state) {
       return state.contractDeployed;
     },
+    ownedIds(state) {
+      return state.ownedIds;
+    },
   },
 };
 export default contractModule;

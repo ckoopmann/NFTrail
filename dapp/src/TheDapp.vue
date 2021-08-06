@@ -68,7 +68,7 @@ import ConnectButton from "./components/custom/ConnectButton.vue";
 import Logo from "./components/main/logo.vue";
 
 export default {
-  name: "App",
+  name: "TheDapp",
   components: { Logo, ConnectButton, Loading },
 
   data() {
@@ -76,12 +76,30 @@ export default {
       scrolled: false,
       clipped: true,
       drawer: false,
-      items: [{ icon: "mdi-folder-plus", title: "New Asset Token", to: "/dapp/new" }],
+      constantItems: [
+        { icon: "mdi-folder-plus", title: "New Asset Token", to: "/dapp/new" },
+      ],
     };
   },
   computed: {
-    ...mapGetters("contractModule", ["contractDeployed", "contractAddress"]),
+    ...mapGetters("contractModule", [
+      "contractDeployed",
+      "contractAddress",
+      "ownedIds",
+    ]),
     ...mapGetters("web3Module", ["isConnected", "selectedAccount"]),
+    items() {
+      return [...this.constantItems, ...this.ownedTokenItems];
+    },
+    ownedTokenItems() {
+      return Object.entries(this.ownedIds).map(([id, data]) => {
+        return {
+          icon: "mdi-folder",
+          title: data.assetIdentifier,
+          to: `/dapp/details/${id}`,
+        };
+      });
+    },
     etherScanLink() {
       return `https://rinkeby.etherscan.io/address/${this.contractAddress}`;
     },
