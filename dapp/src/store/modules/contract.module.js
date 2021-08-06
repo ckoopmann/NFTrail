@@ -11,14 +11,17 @@ const contractModule = {
   name: "contract",
   state: {
     contractDeployed: false,
-    ownedIds: [],
+    ownedIds: {},
   },
   mutations: {
     setContractDeployed(state, contractDeployed) {
       state.contractDeployed = contractDeployed;
     },
-    setOwnedIds(state, ownedIds) {
-      state.ownedIds = ownedIds;
+    setOwnedId(state, { id, assetIdentifier }) {
+      const newValues = {}
+      newValues[id] = {assetIdentifier}
+
+      state.ownedIds = Object.assign({}, state.ownedIds, newValues)
     },
   },
   actions: {
@@ -43,10 +46,19 @@ const contractModule = {
         }
       }
     },
-    async registerListeners() {
-      nftContract.on("Transfer", (from, to , id) => {
+    async registerListeners({ rootGetters, commit }) {
+      nftContract.on("Transfer", async (from, to, id) => {
         // Emitted whenever a DAI token transfer occurs
         console.log("Detected transfer event", from, to, id);
+        const activeAccount = rootGetters["web3Module/selectedAccount"];
+        if (
+          ethers.utils.getAddress(to) === ethers.utils.getAddress(activeAccount)
+        ) {
+          const assetIdentifier = await nftContract.callStatic.getAssetIdentifier(
+            id
+          );
+          commit("setOwnedId", { id, assetIdentifier });
+        }
       });
     },
     async mintNFT({ rootGetters }, { genesisDocumentCID, assetIdentifier }) {
@@ -74,7 +86,6 @@ const contractModule = {
       console.log(
         `Total Supply: ${totalSupply}, ActieAccount: ${activeAccount}`
       );
-      const ownedIDs = [];
       let owner;
       for (let id = 1; id < totalSupply.toNumber() + 1; id++) {
         console.log(`Checking Owner of asset ${id}`);
@@ -87,11 +98,10 @@ const contractModule = {
           const assetIdentifier = await nftContract.callStatic.getAssetIdentifier(
             id
           );
-          ownedIDs.push({ id, assetIdentifier });
           console.log("Owner and active account", owner, activeAccount);
+          commit("setOwnedId", { id, assetIdentifier });
         }
       }
-      commit("setOwnedIds", ownedIDs);
     },
   },
   getters: {
