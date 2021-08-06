@@ -79,11 +79,11 @@ const web3Module = {
           const account = accounts[0];
           console.log("Detected account update: %s", account);
           context.commit("setSelectedAccount", account);
-          // await context.dispatch(
-          //   "contracts/updateContractData",
-          //   {},
-          //   { root: true }
-          // );
+          await context.dispatch(
+            "contractModule/loadOwnedIds",
+            {},
+            { root: true }
+          );
         });
 
         // Note that this will not be triggered if we change between networks with the same chain id

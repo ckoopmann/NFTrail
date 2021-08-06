@@ -18,10 +18,13 @@ const contractModule = {
       state.contractDeployed = contractDeployed;
     },
     setOwnedId(state, { id, assetIdentifier }) {
-      const newValues = {}
-      newValues[id] = {assetIdentifier}
+      const newValues = {};
+      newValues[id] = { assetIdentifier };
 
-      state.ownedIds = Object.assign({}, state.ownedIds, newValues)
+      state.ownedIds = Object.assign({}, state.ownedIds, newValues);
+    },
+    resetOwnedIds(state, ownedIds) {
+      state.ownedIds = ownedIds;
     },
   },
   actions: {
@@ -83,6 +86,7 @@ const contractModule = {
     async loadOwnedIds({ commit, rootGetters }) {
       const activeAccount = rootGetters["web3Module/selectedAccount"];
       const totalSupply = await nftContract.callStatic.totalSupply();
+      const ownedIds = {};
       console.log(
         `Total Supply: ${totalSupply}, ActieAccount: ${activeAccount}`
       );
@@ -99,9 +103,10 @@ const contractModule = {
             id
           );
           console.log("Owner and active account", owner, activeAccount);
-          commit("setOwnedId", { id, assetIdentifier });
+          ownedIds[id] = { assetIdentifier };
         }
       }
+      commit("resetOwnedIds", ownedIds);
     },
   },
   getters: {
