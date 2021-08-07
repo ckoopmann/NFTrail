@@ -16,7 +16,7 @@
           <v-row>
             <v-col cols="12">
               <v-text-field
-                v-model="genesisDocumentCID"
+                v-model="pictureCID"
                 label="CID of genesis documents"
                 required
               ></v-text-field>
@@ -50,7 +50,7 @@ export default {
   data() {
     return {
       loading: false,
-      genesisDocumentCID: "",
+      pictureCID: "",
       assetIdentifier: "",
     };
   },
@@ -61,10 +61,10 @@ export default {
         this.loading = true;
         console.info("Minting amount of tokens: ", this.syntheticTokens);
         await this.mintNFT({
-          genesisDocumentCID: this.genesisDocumentCID,
+          pictureCID: this.pictureCID,
           assetIdentifier: this.assetIdentifier,
         });
-        this.genesisDocumentCID = "";
+        this.pictureCID = "";
         this.assetIdentifier = "";
       } catch (e) {
         console.error("Mint failed with exception: ", e);
