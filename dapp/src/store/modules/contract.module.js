@@ -60,27 +60,27 @@ const contractModule = {
         ) {
           const [
             assetIdentifier,
-            genesisMetadataURI,
+            pictureURI,
           ] = await nftContract.callStatic.getAssetData(id);
           commit("setOwnedId", {
             id,
-            data: { assetIdentifier, genesisMetadataURI },
+            data: { assetIdentifier, pictureURI },
           });
         }
       });
     },
-    async mintNFT({ rootGetters }, { genesisDocumentCID, assetIdentifier }) {
+    async mintNFT({ rootGetters }, { pictureCID, assetIdentifier }) {
       const signer = rootGetters["web3Module/signer"];
       const owner = rootGetters["web3Module/selectedAccount"];
       console.log(
-        `Mintin token with identifier ${assetIdentifier} and genesisCID ${genesisDocumentCID} for owner ${owner}`
+        `Mintin token with identifier ${assetIdentifier} and genesisCID ${pictureCID} for owner ${owner}`
       );
       console.log("Using signer: ", signer);
       if (signer !== undefined) {
         const signerContract = nftContract.connect(signer);
         const mintTx = await signerContract.mintToken(
           owner,
-          genesisDocumentCID,
+          pictureCID,
           assetIdentifier
         );
         const result = await mintTx.wait();
@@ -106,10 +106,10 @@ const contractModule = {
         ) {
           const [
             assetIdentifier,
-            genesisMetadataURI,
+            pictureURI,
           ] = await nftContract.callStatic.getAssetData(id);
           console.log("Owner and active account", owner, activeAccount);
-          ownedIds[id] = { assetIdentifier, genesisMetadataURI };
+          ownedIds[id] = { assetIdentifier, pictureURI };
         }
       }
       commit("resetOwnedIds", ownedIds);

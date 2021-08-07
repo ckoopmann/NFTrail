@@ -1,24 +1,11 @@
 <template>
   <v-card class="mx-auto my-12" max-width="500">
-    <v-card-title>Token Details</v-card-title>
+    <v-img max-width="500" :src="tokenData.pictureURI"></v-img>
+    <v-card-title>{{ tokenData.assetIdentifier }}</v-card-title>
     <v-card-text>
       <v-list-item>
         <v-list-item-title>Token Id</v-list-item-title>
         <v-list-item-subtitle>{{ tokenId }}</v-list-item-subtitle>
-      </v-list-item>
-
-      <v-list-item>
-        <v-list-item-title>Asset Identifier</v-list-item-title>
-        <v-list-item-subtitle>{{
-          tokenData.assetIdentifier
-        }}</v-list-item-subtitle>
-      </v-list-item>
-
-      <v-list-item>
-        <v-list-item-title> Metadata URI </v-list-item-title>
-        <v-list-item-subtitle>{{
-          tokenData.genesisMetadataURI
-        }}</v-list-item-subtitle>
       </v-list-item>
     </v-card-text>
   </v-card>

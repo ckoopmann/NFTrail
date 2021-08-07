@@ -13,10 +13,10 @@ contract NFTrail is ERC721 {
     mapping(uint256 => string) IdassetIdentifierMapping;
 
     constructor(string memory tokenName, string memory symbol) ERC721(tokenName, symbol) {
-        _setBaseURI("ipfs://");
+        _setBaseURI("https://ipfs.io/ipfs/");
     }
 
-    function mintToken(address owner, string memory genesisMetadataURI, string memory assetIdentifier)
+    function mintToken(address owner, string memory pictureCID, string memory assetIdentifier)
     public
     returns (uint256)
     {
@@ -27,7 +27,7 @@ contract NFTrail is ERC721 {
         assetIdentifierIdMapping[assetIdentifier] = id;
         IdassetIdentifierMapping[id] = assetIdentifier;
         _safeMint(owner, id);
-        _setTokenURI(id, genesisMetadataURI);
+        _setTokenURI(id, pictureCID);
 
         return id;
     }
@@ -36,9 +36,9 @@ contract NFTrail is ERC721 {
         return IdassetIdentifierMapping[id];
     }
 
-    function getAssetData(uint256 id) public view returns(string memory assetIdentifier, string memory genesisMetadataURI) {
+    function getAssetData(uint256 id) public view returns(string memory assetIdentifier, string memory pictureURI) {
         assetIdentifier = getAssetIdentifier(id);
-        genesisMetadataURI = tokenURI(id);
+        pictureURI = tokenURI(id);
     }
 
 
