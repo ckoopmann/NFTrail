@@ -45,6 +45,7 @@
   </v-dialog>
 </template>
 <script>
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -59,10 +60,13 @@ export default {
     },
   },
   methods: {
+    ...mapActions("storageModule", ["uploadFiles"]),
     async uploadPicture() {
       try {
         this.loading = true;
         console.info("Uploading Picture: ", this.chosenFile);
+        const cid = await this.uploadFiles([this.chosenFile]);
+        console.info("Uploaded Picture with cid: ", cid);
         this.dialog = false;
       } catch (e) {
         console.error("Upload failed with exception: ", e);
