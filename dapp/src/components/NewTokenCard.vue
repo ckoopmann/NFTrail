@@ -14,12 +14,15 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12">
+            <v-col cols="8">
               <v-text-field
                 v-model="pictureCID"
                 label="CID of genesis documents"
                 required
               ></v-text-field>
+            </v-col>
+            <v-col cols="4">
+              <UploadPictureDialogue />
             </v-col>
           </v-row>
         </v-container>
@@ -46,7 +49,9 @@
 
 <script>
 import { mapActions } from "vuex";
+import UploadPictureDialogue from "./UploadPictureDialogue.vue";
 export default {
+  components: { UploadPictureDialogue },
   data() {
     return {
       loading: false,
