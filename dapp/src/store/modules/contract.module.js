@@ -17,9 +17,9 @@ const contractModule = {
     setContractDeployed(state, contractDeployed) {
       state.contractDeployed = contractDeployed;
     },
-    setOwnedId(state, { id, assetIdentifier }) {
+    setOwnedId(state, { id, data }) {
       const newValues = {};
-      newValues[id] = { assetIdentifier };
+      newValues[id] = data;
 
       state.ownedIds = Object.assign({}, state.ownedIds, newValues);
     },
@@ -50,6 +50,7 @@ const contractModule = {
       }
     },
     async registerListeners({ rootGetters, commit }) {
+      console.log("Registering contract listeners");
       nftContract.on("Transfer", async (from, to, id) => {
         // Emitted whenever a DAI token transfer occurs
         console.log("Detected transfer event", from, to, id);
@@ -57,10 +58,14 @@ const contractModule = {
         if (
           ethers.utils.getAddress(to) === ethers.utils.getAddress(activeAccount)
         ) {
-          const assetIdentifier = await nftContract.callStatic.getAssetIdentifier(
-            id
-          );
-          commit("setOwnedId", { id, assetIdentifier });
+          const [
+            assetIdentifier,
+            genesisMetadataURI,
+          ] = await nftContract.callStatic.getAssetData(id);
+          commit("setOwnedId", {
+            id,
+            data: { assetIdentifier, genesisMetadataURI },
+          });
         }
       });
     },
@@ -99,11 +104,12 @@ const contractModule = {
           ethers.utils.getAddress(owner) ===
           ethers.utils.getAddress(activeAccount)
         ) {
-          const assetIdentifier = await nftContract.callStatic.getAssetIdentifier(
-            id
-          );
+          const [
+            assetIdentifier,
+            genesisMetadataURI,
+          ] = await nftContract.callStatic.getAssetData(id);
           console.log("Owner and active account", owner, activeAccount);
-          ownedIds[id] = { assetIdentifier };
+          ownedIds[id] = { assetIdentifier, genesisMetadataURI };
         }
       }
       commit("resetOwnedIds", ownedIds);

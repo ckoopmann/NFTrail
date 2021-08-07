@@ -35,4 +35,12 @@ contract NFTrail is ERC721 {
     function getAssetIdentifier(uint256 id) public view returns(string memory) {
         return IdassetIdentifierMapping[id];
     }
+
+    function getAssetData(uint256 id) public view returns(string memory assetIdentifier, string memory genesisMetadataURI) {
+        assetIdentifier = getAssetIdentifier(id);
+        genesisMetadataURI = tokenURI(id);
+    }
+
+
+
 }

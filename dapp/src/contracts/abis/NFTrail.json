@@ -7,6 +7,7 @@
   "function balanceOf(address owner) view returns (uint256)",
   "function baseURI() view returns (string)",
   "function getApproved(uint256 tokenId) view returns (address)",
+  "function getAssetData(uint256 id) view returns (string assetIdentifier, string genesisMetadataURI)",
   "function getAssetIdentifier(uint256 id) view returns (string)",
   "function isApprovedForAll(address owner, address operator) view returns (bool)",
   "function mintToken(address owner, string genesisMetadataURI, string assetIdentifier) returns (uint256)",
