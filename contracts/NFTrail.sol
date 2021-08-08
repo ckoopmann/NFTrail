@@ -59,6 +59,22 @@ contract NFTrail is ERC721 {
         numDocuments = getNumDocuments(id);
     }
 
+    function addDocument(uint256 tokenId, string memory documentCID, string memory description) public {
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: transfer caller is not owner nor approved");
+        assetData[tokenId].documents.push(Document(description, documentCID, _msgSender(), block.timestamp));
+    }
+
+    function getDocumentData(uint256 tokenId, uint256 documentIndex) public view returns(string memory description, string memory cid, address author, uint256 creationTime){
+        require(assetData[tokenId].documents.length > documentIndex, "Document Index out of range");
+        description = assetData[tokenId].documents[documentIndex].description;
+        cid = assetData[tokenId].documents[documentIndex].cid;
+        author = assetData[tokenId].documents[documentIndex].author;
+        creationTime = assetData[tokenId].documents[documentIndex].creationTime;
+    }
+
+
+
+
 
 
 }
