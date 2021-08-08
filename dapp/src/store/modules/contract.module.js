@@ -74,6 +74,7 @@ const contractModule = {
         }
       });
     },
+
     async mintNFT({ rootGetters }, { pictureCID, assetIdentifier }) {
       const signer = rootGetters["web3Module/signer"];
       const owner = rootGetters["web3Module/selectedAccount"];
@@ -90,6 +91,24 @@ const contractModule = {
         );
         const result = await mintTx.wait();
         console.log(`Token minted`, result);
+      }
+    },
+
+    async addDocument({ rootGetters }, { tokenId, documentCID, description }) {
+      const signer = rootGetters["web3Module/signer"];
+      console.log(
+        `Adding Document ${documentCID} to token ${tokenId} with description '${description}'`
+      );
+      console.log("Using signer: ", signer);
+      if (signer !== undefined) {
+        const signerContract = nftContract.connect(signer);
+        const addDocumentTx = await signerContract.addDocument(
+          tokenId,
+          documentCID,
+          description
+        );
+        const result = await addDocumentTx.wait();
+        console.log(`Document added`, result);
       }
     },
 
