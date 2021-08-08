@@ -1,8 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import web3Module from "./modules/web3.module";
-import web3 from "./modules/web3.module";
 import contractModule from "./modules/contract.module";
+import storageModule from "./modules/storage.module";
 
 Vue.use(Vuex);
 export default new Vuex.Store({
@@ -24,7 +24,7 @@ export default new Vuex.Store({
   },
   modules: {
     web3Module,
-    web3,
     contractModule,
+    storageModule,
   },
 });
