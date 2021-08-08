@@ -17,12 +17,12 @@
             <v-col cols="8">
               <v-text-field
                 v-model="pictureCID"
-                label="CID of genesis documents"
+                label="CID of Asset picture"
                 required
               ></v-text-field>
             </v-col>
             <v-col cols="4">
-              <UploadPictureDialogue />
+              <UploadPictureDialogue v-model="pictureCID" />
             </v-col>
           </v-row>
         </v-container>

@@ -47,6 +47,7 @@
 <script>
 import { mapActions } from "vuex";
 export default {
+  props: ["value"],
   data() {
     return {
       dialog: false,
@@ -67,6 +68,7 @@ export default {
         console.info("Uploading Picture: ", this.chosenFile);
         const cid = await this.uploadFiles([this.chosenFile]);
         console.info("Uploaded Picture with cid: ", cid);
+        this.$emit("input", cid);
         this.dialog = false;
       } catch (e) {
         console.error("Upload failed with exception: ", e);
