@@ -9,8 +9,20 @@ contract NFTrail is ERC721 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
+    struct Document {
+        string description;
+        string cid;
+        address author;
+        uint256 creationTime;
+    }
+    
+    struct Asset {
+        string assetIdentifier;
+        Document[] documents;
+    }
+    
     mapping(string => uint256) assetIdentifierIdMapping;
-    mapping(uint256 => string) IdassetIdentifierMapping;
+    mapping(uint256 => Asset) assetData;
 
     constructor(string memory tokenName, string memory symbol) ERC721(tokenName, symbol) {
         _setBaseURI("https://ipfs.io/ipfs/");
@@ -25,7 +37,7 @@ contract NFTrail is ERC721 {
 
         uint256 id = _tokenIds.current();
         assetIdentifierIdMapping[assetIdentifier] = id;
-        IdassetIdentifierMapping[id] = assetIdentifier;
+        assetData[id].assetIdentifier = assetIdentifier;
         _safeMint(owner, id);
         _setTokenURI(id, pictureCID);
 
@@ -33,7 +45,7 @@ contract NFTrail is ERC721 {
     }
 
     function getAssetIdentifier(uint256 id) public view returns(string memory) {
-        return IdassetIdentifierMapping[id];
+        return assetData[id].assetIdentifier;
     }
 
     function getAssetData(uint256 id) public view returns(string memory assetIdentifier, string memory pictureURI) {
