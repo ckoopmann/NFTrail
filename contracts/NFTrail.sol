@@ -48,9 +48,15 @@ contract NFTrail is ERC721 {
         return assetData[id].assetIdentifier;
     }
 
-    function getAssetData(uint256 id) public view returns(string memory assetIdentifier, string memory pictureURI) {
+    function getNumDocuments(uint256 id) public view returns(uint256) {
+        return assetData[id].documents.length;
+    }
+
+
+    function getAssetData(uint256 id) public view returns(string memory assetIdentifier, string memory pictureURI, uint256 numDocuments) {
         assetIdentifier = getAssetIdentifier(id);
         pictureURI = tokenURI(id);
+        numDocuments = getNumDocuments(id);
     }
 
 

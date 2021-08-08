@@ -61,10 +61,15 @@ const contractModule = {
           const [
             assetIdentifier,
             pictureURI,
+            numDocuments,
           ] = await nftContract.callStatic.getAssetData(id);
           commit("setOwnedId", {
             id,
-            data: { assetIdentifier, pictureURI },
+            data: {
+              assetIdentifier,
+              pictureURI,
+              numDocuments: numDocuments.toNumber(),
+            },
           });
         }
       });
@@ -107,9 +112,14 @@ const contractModule = {
           const [
             assetIdentifier,
             pictureURI,
+            numDocuments,
           ] = await nftContract.callStatic.getAssetData(id);
           console.log("Owner and active account", owner, activeAccount);
-          ownedIds[id] = { assetIdentifier, pictureURI };
+          ownedIds[id] = {
+            assetIdentifier,
+            pictureURI,
+            numDocuments: numDocuments.toNumber(),
+          };
         }
       }
       commit("resetOwnedIds", ownedIds);
