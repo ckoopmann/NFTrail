@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" max-width="600px" persistent>
     <template #activator="{ on, attrs }">
-      <v-btn v-bind="attrs" color="primary" text v-on="on">
+      <v-btn v-bind="attrs" color="primary" v-on="on">
         Upload Picture</v-btn
       >
     </template>
@@ -15,9 +15,10 @@
             <v-row>
               <v-col cols="12">
                 <v-file-input
-                  accept=".jpg"
+                  accept="image/png, image/jpeg, image/bmp"
                   label="Click here to select a Picture"
                   outlined
+                  prepend-icon="mdi-camera"
                   v-model="chosenFile"
                 ></v-file-input>
               </v-col>
