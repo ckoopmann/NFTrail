@@ -1,7 +1,7 @@
 <template>
   <v-card class="mx-auto my-12" max-width="500">
     <v-card-title>Search Token</v-card-title>
-    <form>
+    <v-form @submit.prevent="search">
       <v-card-text>
         <v-row>
           <v-col cols="12">
@@ -14,7 +14,9 @@
         </v-row>
         <div v-if="searched">
           <v-row v-if="notFound"
-            ><v-col cols="12"><h2>{{ errorMessage }}</h2></v-col></v-row
+            ><v-col cols="12"
+              ><h2>{{ errorMessage }}</h2></v-col
+            ></v-row
           >
           <v-list v-else three-line>
             <template v-for="(result, index) in searchResults">
@@ -45,9 +47,9 @@
         <v-btn
           color="blue darken-1"
           type="button"
-          @click.prevent="search"
           :loading="loading"
           :disabled="loading"
+          @click.prevent="search"
         >
           Search
           <template #loader>
@@ -55,7 +57,7 @@
           </template>
         </v-btn>
       </v-card-actions>
-    </form>
+    </v-form>
   </v-card>
 </template>
 
