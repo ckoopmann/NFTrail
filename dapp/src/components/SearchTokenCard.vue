@@ -11,31 +11,33 @@
               required
             ></v-text-field>
           </v-col>
-          <div v-if="searched">
-            <h2 v-if="notFound">Asset {{ this.assetIdentifier }} not found</h2>
-            <v-list v-else three-line>
-              <template v-for="(result, index) in searchResults">
-                <v-list-item :key="index">
-                  <v-list-item-content>
-                    <v-list-item-title
-                      v-html="result.assetIdentifier"
-                    ></v-list-item-title>
-                    <v-list-item-subtitle>{{
-                      result.owner
-                    }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                  <v-list-item-action>
-                    <v-btn icon :to="result.to" router exact>
-                      <v-icon large color="blue lighten-1"
-                        >mdi-information</v-icon
-                      >
-                    </v-btn>
-                  </v-list-item-action>
-                </v-list-item>
-              </template>
-            </v-list>
-          </div>
         </v-row>
+        <div v-if="searched">
+          <v-row v-if="notFound"
+            ><v-col cols="12"><h2>{{ errorMessage }}</h2></v-col></v-row
+          >
+          <v-list v-else three-line>
+            <template v-for="(result, index) in searchResults">
+              <v-list-item :key="index">
+                <v-list-item-content>
+                  <v-list-item-title
+                    v-html="result.assetIdentifier"
+                  ></v-list-item-title>
+                  <v-list-item-subtitle>{{
+                    result.owner
+                  }}</v-list-item-subtitle>
+                </v-list-item-content>
+                <v-list-item-action>
+                  <v-btn icon :to="result.to" router exact>
+                    <v-icon large color="blue lighten-1"
+                      >mdi-information</v-icon
+                    >
+                  </v-btn>
+                </v-list-item-action>
+              </v-list-item>
+            </template>
+          </v-list>
+        </div>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -66,6 +68,7 @@ export default {
       searched: false,
       notFound: false,
       assetIdentifier: "",
+      errorMessage: "",
       searchResults: [
         {
           assetIdentifier: "DummyAsset",
@@ -86,11 +89,12 @@ export default {
         const result = await this.searchToken(this.assetIdentifier);
         if (result == null) {
           this.notFound = true;
+          this.errorMessage = `Asset ${this.assetIdentifier} not found`;
         } else {
           result.to = `/dapp/details/${result.tokenId}`;
           this.searchResults.push(result);
+          this.assetIdentifier = "";
         }
-        this.assetIdentifier = "";
       } catch (e) {
         console.error("Search failed with exception: ", e);
       } finally {
