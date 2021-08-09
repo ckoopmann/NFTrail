@@ -141,6 +141,7 @@ const contractModule = {
         assetIdentifier,
         pictureURI,
         numDocumentsRaw,
+        owner,
       ] = await nftContract.callStatic.getAssetData(tokenId);
       const numDocuments = numDocumentsRaw.toNumber();
       const documents = [];
@@ -168,6 +169,7 @@ const contractModule = {
       commit("setCurrentTokenDetails", {
         assetIdentifier,
         pictureURI,
+        owner,
         documents,
       });
     },
