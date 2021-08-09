@@ -10,7 +10,7 @@
                 v-html="document.description"
               ></v-list-item-title>
               <v-list-item-subtitle>{{
-                new Date(document.creationTime)
+                (new Date(document.creationTime)).toLocaleString('en-GB')
               }}</v-list-item-subtitle>
               <v-list-item-subtitle
                 v-html="document.author"
