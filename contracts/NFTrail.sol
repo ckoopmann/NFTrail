@@ -24,6 +24,9 @@ contract NFTrail is ERC721 {
     mapping(string => uint256) assetIdentifierIdMapping;
     mapping(uint256 => Asset) assetData;
 
+
+    event DocumentAdded(uint256 tokenId, uint256 documentIndex);
+
     constructor(string memory tokenName, string memory symbol) ERC721(tokenName, symbol) {
         _setBaseURI("https://ipfs.io/ipfs/");
     }
@@ -48,10 +51,34 @@ contract NFTrail is ERC721 {
         return assetData[id].assetIdentifier;
     }
 
-    function getAssetData(uint256 id) public view returns(string memory assetIdentifier, string memory pictureURI) {
+    function getNumDocuments(uint256 id) public view returns(uint256) {
+        return assetData[id].documents.length;
+    }
+
+
+    function getAssetData(uint256 id) public view returns(string memory assetIdentifier, string memory pictureURI, uint256 numDocuments) {
         assetIdentifier = getAssetIdentifier(id);
         pictureURI = tokenURI(id);
+        numDocuments = getNumDocuments(id);
     }
+
+    function addDocument(uint256 tokenId, string memory documentCID, string memory description) public {
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: transfer caller is not owner nor approved");
+        uint256 documentIndex = assetData[tokenId].documents.length;
+        assetData[tokenId].documents.push(Document(description, documentCID, _msgSender(), block.timestamp));
+        emit DocumentAdded(tokenId, documentIndex);
+    }
+
+    function getDocumentData(uint256 tokenId, uint256 documentIndex) public view returns(string memory description, string memory cid, address author, uint256 creationTime){
+        require(assetData[tokenId].documents.length > documentIndex, "Document Index out of range");
+        description = assetData[tokenId].documents[documentIndex].description;
+        cid = assetData[tokenId].documents[documentIndex].cid;
+        author = assetData[tokenId].documents[documentIndex].author;
+        creationTime = assetData[tokenId].documents[documentIndex].creationTime;
+    }
+
+
+
 
 
 

@@ -12,10 +12,18 @@ const contractModule = {
   state: {
     contractDeployed: false,
     ownedIds: {},
+    currentTokenDetails: null,
+    currentTokenId: null,
   },
   mutations: {
     setContractDeployed(state, contractDeployed) {
       state.contractDeployed = contractDeployed;
+    },
+    setCurrentTokenDetails(state, currentTokenDetails) {
+      state.currentTokenDetails = currentTokenDetails;
+    },
+    setCurrentTokenId(state, currentTokenId) {
+      state.currentTokenId = currentTokenId;
     },
     setOwnedId(state, { id, data }) {
       const newValues = {};
@@ -49,10 +57,10 @@ const contractModule = {
         }
       }
     },
-    async registerListeners({ rootGetters, commit }) {
+    async registerListeners({ getters, rootGetters, commit }) {
       console.log("Registering contract listeners");
+
       nftContract.on("Transfer", async (from, to, id) => {
-        // Emitted whenever a DAI token transfer occurs
         console.log("Detected transfer event", from, to, id);
         const activeAccount = rootGetters["web3Module/selectedAccount"];
         if (
@@ -61,14 +69,82 @@ const contractModule = {
           const [
             assetIdentifier,
             pictureURI,
+            numDocuments,
           ] = await nftContract.callStatic.getAssetData(id);
           commit("setOwnedId", {
             id,
-            data: { assetIdentifier, pictureURI },
+            data: {
+              assetIdentifier,
+              pictureURI,
+              numDocuments: numDocuments.toNumber(),
+            },
           });
         }
       });
+
+      nftContract.on("DocumentAdded", async (tokenId, documentIndex) => {
+        const currentTokenId = getters["currentTokenId"];
+        console.log("Detected add document event", tokenId, documentIndex, currentTokenId);
+        if (tokenId.toNumber() == currentTokenId) {
+          const currentTokenDetails = getters["currentTokenDetails"];
+          const loadedDocuments = currentTokenDetails.documents.length;
+          console.log("Adding  documents", loadedDocuments, documentIndex);
+          for (let i = loadedDocuments; i <= documentIndex; i++) {
+            const [
+              description,
+              cid,
+              author,
+              creationTime,
+            ] = await nftContract.getDocumentData(tokenId, documentIndex);
+            currentTokenDetails.documents.push({
+              description,
+              cid,
+              author,
+              creationTime: creationTime.toNumber() * 1000,
+            });
+          }
+          commit("setCurrentTokenDetails", currentTokenDetails);
+        }
+      });
     },
+
+    async loadTokenDetails({ commit }, tokenId) {
+      commit("setCurrentTokenId", tokenId);
+      const [
+        assetIdentifier,
+        pictureURI,
+        numDocumentsRaw,
+      ] = await nftContract.callStatic.getAssetData(tokenId);
+      const numDocuments = numDocumentsRaw.toNumber();
+      const documents = [];
+      for (
+        let documentIndex = 0;
+        documentIndex < numDocuments;
+        documentIndex++
+      ) {
+        const [
+          description,
+          cid,
+          author,
+          creationTime,
+        ] = await nftContract.callStatic.getDocumentData(
+          tokenId,
+          documentIndex
+        );
+        documents.push({
+          description,
+          cid,
+          author,
+          creationTime: creationTime.toNumber() * 1000,
+        });
+      }
+      commit("setCurrentTokenDetails", {
+        assetIdentifier,
+        pictureURI,
+        documents,
+      });
+    },
+
     async mintNFT({ rootGetters }, { pictureCID, assetIdentifier }) {
       const signer = rootGetters["web3Module/signer"];
       const owner = rootGetters["web3Module/selectedAccount"];
@@ -85,6 +161,24 @@ const contractModule = {
         );
         const result = await mintTx.wait();
         console.log(`Token minted`, result);
+      }
+    },
+
+    async addDocument({ rootGetters }, { tokenId, documentCID, description }) {
+      const signer = rootGetters["web3Module/signer"];
+      console.log(
+        `Adding Document ${documentCID} to token ${tokenId} with description '${description}'`
+      );
+      console.log("Using signer: ", signer);
+      if (signer !== undefined) {
+        const signerContract = nftContract.connect(signer);
+        const addDocumentTx = await signerContract.addDocument(
+          tokenId,
+          documentCID,
+          description
+        );
+        const result = await addDocumentTx.wait();
+        console.log(`Document added`, result);
       }
     },
 
@@ -107,9 +201,14 @@ const contractModule = {
           const [
             assetIdentifier,
             pictureURI,
+            numDocuments,
           ] = await nftContract.callStatic.getAssetData(id);
           console.log("Owner and active account", owner, activeAccount);
-          ownedIds[id] = { assetIdentifier, pictureURI };
+          ownedIds[id] = {
+            assetIdentifier,
+            pictureURI,
+            numDocuments: numDocuments.toNumber(),
+          };
         }
       }
       commit("resetOwnedIds", ownedIds);
@@ -127,6 +226,12 @@ const contractModule = {
     },
     ownedIds(state) {
       return state.ownedIds;
+    },
+    currentTokenDetails(state) {
+      return state.currentTokenDetails;
+    },
+    currentTokenId(state) {
+      return state.currentTokenId;
     },
   },
 };
