@@ -9,9 +9,9 @@
               <v-list-item-title
                 v-html="document.description"
               ></v-list-item-title>
-              <v-list-item-subtitle
-                v-html="document.creationDate"
-              ></v-list-item-subtitle>
+              <v-list-item-subtitle>{{
+                new Date(document.creationTime)
+              }}</v-list-item-subtitle>
               <v-list-item-subtitle
                 v-html="document.author"
               ></v-list-item-subtitle>
@@ -31,22 +31,10 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
-  data() {
-    return {
-      attachedDocuments: [
-        {
-          cid: "asdf",
-          creationDate: "2021-08-07 12:00:00",
-          author: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-          description: "Initial Sale Contract",
-        },
-      ],
-    };
-  },
   computed: {
-    ...mapGetters("contractModule", ["ownedIds"]),
-    tokenData() {
-      return this.ownedIds[this.tokenId];
+    ...mapGetters("contractModule", ["currentTokenDetails"]),
+    attachedDocuments() {
+      return this.currentTokenDetails?.documents ?? [];
     },
   },
 };

@@ -12,10 +12,14 @@ const contractModule = {
   state: {
     contractDeployed: false,
     ownedIds: {},
+    currentTokenDetails: null,
   },
   mutations: {
     setContractDeployed(state, contractDeployed) {
       state.contractDeployed = contractDeployed;
+    },
+    setCurrentTokenDetails(state, currentTokenDetails) {
+      state.currentTokenDetails = currentTokenDetails;
     },
     setOwnedId(state, { id, data }) {
       const newValues = {};
@@ -72,6 +76,42 @@ const contractModule = {
             },
           });
         }
+      });
+    },
+
+    async loadTokenDetails({ commit }, tokenId) {
+      const [
+        assetIdentifier,
+        pictureURI,
+        numDocumentsRaw,
+      ] = await nftContract.callStatic.getAssetData(tokenId);
+      const numDocuments = numDocumentsRaw.toNumber();
+      const documents = [];
+      for (
+        let documentIndex = 0;
+        documentIndex < numDocuments;
+        documentIndex++
+      ) {
+        const [
+          description,
+          cid,
+          author,
+          creationTime,
+        ] = await nftContract.callStatic.getDocumentData(
+          tokenId,
+          documentIndex
+        );
+        documents.push({
+          description,
+          cid,
+          author,
+          creationTime: creationTime.toNumber() * 1000,
+        });
+      }
+      commit("setCurrentTokenDetails", {
+        assetIdentifier,
+        pictureURI,
+        documents,
       });
     },
 
@@ -156,6 +196,9 @@ const contractModule = {
     },
     ownedIds(state) {
       return state.ownedIds;
+    },
+    currentTokenDetails(state) {
+      return state.currentTokenDetails;
     },
   },
 };
