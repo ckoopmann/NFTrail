@@ -2,7 +2,12 @@
   <v-card class="mx-auto my-12" max-width="500">
     <v-card-title>Attached Documents</v-card-title>
     <v-card-text>
-      <v-list three-line>
+      <v-row v-if="noDocumentsAttached"
+        ><v-col cols="12"
+          ><h2>This asset has no documents attached yet</h2></v-col
+        ></v-row
+      >
+      <v-list v-else three-line>
         <template v-for="(document, index) in attachedDocuments">
           <v-list-item :key="index">
             <v-list-item-content>
@@ -37,6 +42,9 @@ import { mapGetters } from "vuex";
 export default {
   computed: {
     ...mapGetters("contractModule", ["currentTokenDetails"]),
+    noDocumentsAttached() {
+      return this.attachedDocuments.length == 0;
+    },
     attachedDocuments() {
       return this.currentTokenDetails?.documents ?? [];
     },

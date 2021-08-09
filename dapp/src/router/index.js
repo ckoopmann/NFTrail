@@ -4,6 +4,7 @@ import LandingPage from "../LandingPage.vue";
 import Home from "../views/Home.vue";
 import TheDapp from "../TheDapp.vue";
 import NewToken from "../views/NewToken.vue";
+import SearchToken from "../views/SearchToken.vue";
 import TokenDetails from "../views/TokenDetails.vue";
 
 Vue.use(VueRouter);
@@ -21,6 +22,7 @@ const routes = [
     component: TheDapp,
     children: [
       { path: "new", name: "newToken", component: NewToken },
+      { path: "search", name: "searchToken", component: SearchToken },
       { path: "details/:id", component: TokenDetails },
     ],
   },

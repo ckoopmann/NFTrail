@@ -77,6 +77,7 @@ export default {
       clipped: true,
       drawer: false,
       constantItems: [
+        { icon: "mdi-magnify", title: "Search Assets", to: "/dapp/search" },
         { icon: "mdi-folder-plus", title: "New Asset Token", to: "/dapp/new" },
       ],
     };

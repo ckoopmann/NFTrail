@@ -84,7 +84,12 @@ const contractModule = {
 
       nftContract.on("DocumentAdded", async (tokenId, documentIndex) => {
         const currentTokenId = getters["currentTokenId"];
-        console.log("Detected add document event", tokenId, documentIndex, currentTokenId);
+        console.log(
+          "Detected add document event",
+          tokenId,
+          documentIndex,
+          currentTokenId
+        );
         if (tokenId.toNumber() == currentTokenId) {
           const currentTokenDetails = getters["currentTokenDetails"];
           const loadedDocuments = currentTokenDetails.documents.length;
@@ -108,12 +113,35 @@ const contractModule = {
       });
     },
 
+    async searchToken(_, assetIdentifier) {
+      const tokenId = (
+        await nftContract.callStatic.getTokenId(assetIdentifier)
+      ).toNumber();
+      if (tokenId == 0) {
+        return null;
+      }
+      const [
+        assetIdentifierReturned,
+        pictureURI,
+        numDocumentsRaw,
+        owner,
+      ] = await nftContract.callStatic.getAssetData(tokenId);
+      return {
+        tokenId,
+        assetIdentifier: assetIdentifierReturned,
+        pictureURI,
+        numDocuments: numDocumentsRaw.toNumber(),
+        owner,
+      };
+    },
+
     async loadTokenDetails({ commit }, tokenId) {
       commit("setCurrentTokenId", tokenId);
       const [
         assetIdentifier,
         pictureURI,
         numDocumentsRaw,
+        owner,
       ] = await nftContract.callStatic.getAssetData(tokenId);
       const numDocuments = numDocumentsRaw.toNumber();
       const documents = [];
@@ -141,6 +169,7 @@ const contractModule = {
       commit("setCurrentTokenDetails", {
         assetIdentifier,
         pictureURI,
+        owner,
         documents,
       });
     },
