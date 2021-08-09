@@ -24,6 +24,9 @@ contract NFTrail is ERC721 {
     mapping(string => uint256) assetIdentifierIdMapping;
     mapping(uint256 => Asset) assetData;
 
+
+    event DocumentAdded(uint256 tokenId, uint256 documentIndex);
+
     constructor(string memory tokenName, string memory symbol) ERC721(tokenName, symbol) {
         _setBaseURI("https://ipfs.io/ipfs/");
     }
@@ -61,7 +64,9 @@ contract NFTrail is ERC721 {
 
     function addDocument(uint256 tokenId, string memory documentCID, string memory description) public {
         require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: transfer caller is not owner nor approved");
+        uint256 documentIndex = assetData[tokenId].documents.length;
         assetData[tokenId].documents.push(Document(description, documentCID, _msgSender(), block.timestamp));
+        emit DocumentAdded(tokenId, documentIndex);
     }
 
     function getDocumentData(uint256 tokenId, uint256 documentIndex) public view returns(string memory description, string memory cid, address author, uint256 creationTime){

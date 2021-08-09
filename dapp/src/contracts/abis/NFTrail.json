@@ -2,6 +2,7 @@
   "constructor(string tokenName, string symbol)",
   "event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId)",
   "event ApprovalForAll(address indexed owner, address indexed operator, bool approved)",
+  "event DocumentAdded(uint256 tokenId, uint256 documentIndex)",
   "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
   "function addDocument(uint256 tokenId, string documentCID, string description)",
   "function approve(address to, uint256 tokenId)",
