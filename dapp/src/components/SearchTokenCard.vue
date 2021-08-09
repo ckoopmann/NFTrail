@@ -11,27 +11,30 @@
               required
             ></v-text-field>
           </v-col>
-          <v-list three-line v-if="searched">
-            <template v-for="(result, index) in searchResults">
-              <v-list-item :key="index">
-                <v-list-item-content>
-                  <v-list-item-title
-                    v-html="result.assetIdentifier"
-                  ></v-list-item-title>
-                  <v-list-item-subtitle>{{
-                    result.owner
-                  }}</v-list-item-subtitle>
-                </v-list-item-content>
-                <v-list-item-action>
-                  <v-btn icon :to="result.to" router exact>
-                    <v-icon large color="blue lighten-1"
-                      >mdi-information</v-icon
-                    >
-                  </v-btn>
-                </v-list-item-action>
-              </v-list-item>
-            </template>
-          </v-list>
+          <div v-if="searched">
+            <h2 v-if="notFound">Asset {{ this.assetIdentifier }} not found</h2>
+            <v-list v-else three-line>
+              <template v-for="(result, index) in searchResults">
+                <v-list-item :key="index">
+                  <v-list-item-content>
+                    <v-list-item-title
+                      v-html="result.assetIdentifier"
+                    ></v-list-item-title>
+                    <v-list-item-subtitle>{{
+                      result.owner
+                    }}</v-list-item-subtitle>
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-btn icon :to="result.to" router exact>
+                      <v-icon large color="blue lighten-1"
+                        >mdi-information</v-icon
+                      >
+                    </v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+              </template>
+            </v-list>
+          </div>
         </v-row>
       </v-card-text>
       <v-card-actions>
@@ -55,11 +58,13 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
       loading: false,
       searched: false,
+      notFound: false,
       assetIdentifier: "",
       searchResults: [
         {
@@ -71,10 +76,20 @@ export default {
     };
   },
   methods: {
+    ...mapActions("contractModule", ["searchToken"]),
     async search() {
       try {
+        this.searchResults = [];
+        this.notFound = false;
         this.loading = true;
         console.info("Searching for token", this.assetIdentifier);
+        const result = await this.searchToken(this.assetIdentifier);
+        if (result == null) {
+          this.notFound = true;
+        } else {
+          result.to = `/dapp/details/${result.tokenId}`;
+          this.searchResults.push(result);
+        }
         this.assetIdentifier = "";
       } catch (e) {
         console.error("Search failed with exception: ", e);
