@@ -10,14 +10,18 @@
                 v-html="document.description"
               ></v-list-item-title>
               <v-list-item-subtitle>{{
-                (new Date(document.creationTime)).toLocaleString('en-GB')
+                new Date(document.creationTime).toLocaleString("en-GB")
               }}</v-list-item-subtitle>
               <v-list-item-subtitle
                 v-html="document.author"
               ></v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <v-btn icon>
+              <v-btn
+                icon
+                target="_blank"
+                :href="`https://ipfs.io/ipfs/${document.cid}`"
+              >
                 <v-icon large color="blue lighten-1">mdi-download-box</v-icon>
               </v-btn>
             </v-list-item-action>
