@@ -51,7 +51,12 @@
           Please Connect your wallet to use the app
         </div>
       </v-navigation-drawer>
-      <router-view />
+      <div>
+        <v-overlay v-if="!isConnected" absolute>
+          <v-btn>Please connect your wallet</v-btn>
+        </v-overlay>
+        <router-view v-else />
+      </div>
     </v-main>
   </v-app>
 </template>
