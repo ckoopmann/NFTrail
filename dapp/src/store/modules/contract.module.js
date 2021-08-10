@@ -135,8 +135,12 @@ const contractModule = {
       };
     },
 
-    async loadTokenDetails({ commit }, tokenId) {
-      commit("setCurrentTokenId", tokenId);
+    async loadTokenDetails({ commit, getters }) {
+      const tokenId = getters["currentTokenId"];
+      if (tokenId == null) {
+        console.warning("No token ID set abort loading token details");
+        return;
+      }
       const [
         assetIdentifier,
         pictureURI,
@@ -259,8 +263,14 @@ const contractModule = {
     currentTokenDetails(state) {
       return state.currentTokenDetails;
     },
-    currentTokenId(state) {
-      return state.currentTokenId;
+    currentTokenId(_, _2, rootState) {
+      if ("route" in rootState) {
+        if ("id" in rootState.route.params) {
+          return rootState.route.params.id;
+        }
+      } else {
+        return null;
+      }
     },
   },
 };

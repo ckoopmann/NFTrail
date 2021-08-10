@@ -8,6 +8,7 @@
       height="auto"
       contain
       @click="navigate"
+      style="z-index:100;"
     />
   </div>
 </template>

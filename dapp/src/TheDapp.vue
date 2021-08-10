@@ -5,10 +5,11 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
       <v-container class="d-flex align-center">
-        <div>
-          <!-- logo -->
-          <logo :light="light" :width="pcOnly ? 140 : 125" />
-        </div>
+        <router-link to="/">
+          <v-avatar tile size="75">
+            <v-img src="assets/logo_transparent.png" contain />
+          </v-avatar>
+        </router-link>
         <v-spacer />
         <div v-if="isConnected" :title="selectedAccount" class="connected">
           Connected: {{ selectedAccount }}
@@ -38,6 +39,7 @@
             :to="item.to"
             router
             exact
+            style="z-index:1000;"
           >
             <v-list-item-action>
               <v-icon>{{ item.icon }}</v-icon>
@@ -51,7 +53,12 @@
           Please Connect your wallet to use the app
         </div>
       </v-navigation-drawer>
-      <router-view />
+      <div>
+        <v-overlay v-if="!isConnected" absolute>
+          <v-btn>Please connect your wallet</v-btn>
+        </v-overlay>
+        <router-view v-else />
+      </div>
     </v-main>
   </v-app>
 </template>
@@ -65,11 +72,10 @@ import GlobalComputed from "@/helpers/global-computed";
 import GlobalMethods from "@/helpers/global-methods";
 
 import ConnectButton from "./components/custom/ConnectButton.vue";
-import Logo from "./components/main/logo.vue";
 
 export default {
   name: "TheDapp",
-  components: { Logo, ConnectButton, Loading },
+  components: { ConnectButton, Loading },
 
   data() {
     return {
