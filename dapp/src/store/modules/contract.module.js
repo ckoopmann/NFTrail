@@ -137,6 +137,10 @@ const contractModule = {
 
     async loadTokenDetails({ commit, getters }) {
       const tokenId = getters["currentTokenId"];
+      if (tokenId == null) {
+        console.warning("No token ID set abort loading token details");
+        return;
+      }
       const [
         assetIdentifier,
         pictureURI,
