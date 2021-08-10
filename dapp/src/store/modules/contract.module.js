@@ -36,7 +36,7 @@ const contractModule = {
     },
   },
   actions: {
-    async initializeContract({ commit, rootGetters }) {
+    async initializeContract({ commit, rootGetters, dispatch }) {
       commit("setContractDeployed", false);
       const networkId = rootGetters["web3Module/networkId"];
       const provider = getCurrentProvider();
@@ -44,16 +44,29 @@ const contractModule = {
         throw new Error("Provider is undefined - Cannot initialize contract");
       } else {
         if (networkId in addresses) {
-          nftContract = new ethers.Contract(
-            addresses[networkId],
-            abi,
-            provider
-          );
-          // Will throw an error if contract is not deployed on current network
-          await nftContract.deployed();
-          console.log("Connected to contract at: ", addresses[networkId]);
+          try {
+            nftContract = new ethers.Contract(
+              addresses[networkId],
+              abi,
+              provider
+            );
+            // Will throw an error if contract is not deployed on current network
+            await nftContract.deployed();
+            console.log("Connected to contract at: ", addresses[networkId]);
+            commit("setContractDeployed", true);
+            dispatch("setErrorType", null, {
+              root: true,
+            });
+          } catch (e) {
+            dispatch("setErrorType", "failedContractConnection", {
+              root: true,
+            });
+          }
         } else {
           console.error("Contract is not deployed on networkId ", networkId);
+          dispatch("setErrorType", "failedContractConnection", {
+            root: true,
+          });
         }
       }
     },
@@ -138,7 +151,7 @@ const contractModule = {
     async loadTokenDetails({ commit, getters }) {
       const tokenId = getters["currentTokenId"];
       if (tokenId == null) {
-        console.warning("No token ID set abort loading token details");
+        console.error("No token ID set abort loading token details");
         return;
       }
       const [
