@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="currentTokenDetails != null">
     <TokenSummaryCard />
     <DocumentListCard />
     <UploadDocumentCard v-if="isOwner" />
@@ -8,7 +8,7 @@
 
 <script>
 import { ethers } from "ethers";
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 
 import TokenSummaryCard from "../components/TokenSummaryCard.vue";
 import UploadDocumentCard from "../components/UploadDocumentCard.vue";
@@ -30,10 +30,6 @@ export default {
         ethers.utils.getAddress(this.selectedAccount)
       );
     },
-  },
-  methods: mapActions("contractModule", ["loadTokenDetails"]),
-  mounted() {
-    this.loadTokenDetails(this.$route.params.id);
   },
 };
 </script>

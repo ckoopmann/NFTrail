@@ -136,6 +136,7 @@ const web3Module = {
     },
     signer(state) {
       const modalProvider = getCurrentProvider();
+      console.error("Undefined provider when trying to generate signer");
       if (modalProvider !== undefined) {
         return modalProvider.getSigner(state.selectedAccount);
       } else {

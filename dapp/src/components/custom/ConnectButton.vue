@@ -32,6 +32,7 @@ export default {
       "initializeContract",
       "registerListeners",
       "loadOwnedIds",
+      "loadTokenDetails",
     ]),
     async connect() {
       this.loading = true;
@@ -40,6 +41,7 @@ export default {
         await this.initializeContract();
         await this.registerListeners();
         await this.loadOwnedIds();
+        await this.loadTokenDetails();
       } finally {
         this.loading = false;
       }
