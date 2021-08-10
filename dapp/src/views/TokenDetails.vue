@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="currentTokenDetails != null">
     <TokenSummaryCard />
     <DocumentListCard />
     <UploadDocumentCard v-if="isOwner" />
