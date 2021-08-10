@@ -1,5 +1,15 @@
 require("@nomiclabs/hardhat-waffle");
 
+function mnemonic() {
+  try {
+    return fs.readFileSync("./mnemonic.txt").toString().trim()
+  } catch (e) {
+    console.log("WARNING: No mnemonic file")
+  }
+  return ""
+}
+
+
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
@@ -17,6 +27,17 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
+  defaultNetwork: "hardhat",
+  networks: {
+    hardhat: {},
+    matic: {
+      url: "https://rpc-mumbai.maticvigil.com",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+  },
+
   namedAccounts: {
     deployer: 0,
     tokenRecipient: 1,
