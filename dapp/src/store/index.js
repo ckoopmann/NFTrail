@@ -5,7 +5,7 @@ import contractModule from "./modules/contract.module";
 import storageModule from "./modules/storage.module";
 
 Vue.use(Vuex);
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
     loading: true,
     lightNavbar: false,
@@ -28,3 +28,13 @@ export default new Vuex.Store({
     storageModule,
   },
 });
+
+store.watch(
+  (_, getters) => getters["contractModule/currentTokenId"],
+  () => {
+    console.log("Registered")
+    store.dispatch("contractModule/loadTokenDetails");
+  }
+);
+
+export default store;
