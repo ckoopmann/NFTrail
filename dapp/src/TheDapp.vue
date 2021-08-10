@@ -32,7 +32,7 @@
         class="navigationdrawer"
         stateless
       >
-        <v-list v-if="isConnected">
+        <v-list v-if="errorType == null">
           <v-list-item
             v-for="(item, i) in items"
             :key="i"
@@ -50,13 +50,13 @@
           </v-list-item>
         </v-list>
         <div v-else class="p-6 m-6">
-          Please Connect your wallet to use the app
+          {{ this.errorMessage }}
         </div>
       </v-navigation-drawer>
       <div>
-        <v-overlay v-if="!isConnected" absolute>
-          <v-btn>Please connect your wallet</v-btn>
-        </v-overlay>
+        <v-card v-if="errorType != null" class="mx-auto my-12" max-width="500">
+          <v-card-text>{{ this.errorMessage }}</v-card-text></v-card
+        >
         <router-view v-else />
       </div>
     </v-main>
@@ -89,6 +89,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["errorType", "errorMessage"]),
     ...mapGetters("contractModule", [
       "contractDeployed",
       "contractAddress",
