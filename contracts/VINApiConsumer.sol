@@ -25,8 +25,9 @@ contract VINApiConsumer is ChainlinkClient {
     constructor() public {
         address chainLinkTokenAddress = 0x326C977E6efc84E512bB9C30f76E30c160eD06FB;
         setChainlinkToken(chainLinkTokenAddress);
-        oracle = 0x0bDDCD124709aCBf9BB3F824EbC61C87019888bb;
-        jobId = "c6a006e4f4844754a6524445acde84a0";
+        // LinkRiver
+        oracle = 0xc8D925525CA8759812d0c299B90247917d4d4b7C;
+        jobId = "a7330d0b4b964c05abc66a26307047c0";
         fee = 0.01 * 10 ** 18; // (Varies by network and job)
         baseURL="https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/";
         queryParams="?format=json";
