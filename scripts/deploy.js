@@ -11,7 +11,12 @@ async function deployContract(contractName, constructorArgs) {
   const addressPath = `dapp/src/contracts/addresses/${contractName}.json`;
 
   const factory = await ethers.getContractFactory(contractName);
-  const contract = await factory.deploy(...constructorArgs);
+  if(constructorArgs != null){
+    contract = await factory.deploy(...constructorArgs);
+  } 
+  else{
+    contract = await factory.deploy();
+  } 
   await contract.deployed();
   const { chainId } = await ethers.provider.getNetwork();
 
@@ -22,10 +27,8 @@ async function deployContract(contractName, constructorArgs) {
   addresses[chainId] = contract.address;
 
   fs.writeFileSync(addressPath, JSON.stringify(addresses, null, 2));
-  console.log(contract);
 
   const readableAbi = contract.interface.format(ethers.utils.FormatTypes.full);
-  console.log("Readable Abi: ", readableAbi);
   fs.writeFileSync(abiPath, JSON.stringify(readableAbi, null, 2));
 
   console.log(
@@ -43,6 +46,8 @@ async function main() {
 
   // We get the contract to deploy
   await deployContract("NFTrail", ["NFTrail", "TRL"]);
+  await deployContract("CarToken", ["CarToken", "CAR"]);
+  await deployContract("VINApiConsumer", null);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

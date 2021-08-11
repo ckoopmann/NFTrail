@@ -82,10 +82,4 @@ contract NFTrail is ERC721 {
         author = assetData[tokenId].documents[documentIndex].author;
         creationTime = assetData[tokenId].documents[documentIndex].creationTime;
     }
-
-
-
-
-
-
 }

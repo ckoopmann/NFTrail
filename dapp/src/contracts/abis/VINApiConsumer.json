@@ -1,0 +1,12 @@
+[
+  "constructor()",
+  "event ChainlinkCancelled(bytes32 indexed id)",
+  "event ChainlinkFulfilled(bytes32 indexed id)",
+  "event ChainlinkRequested(bytes32 indexed id)",
+  "function baseURL() view returns (string)",
+  "function bytes32ToString(bytes32 _bytes32) pure returns (string)",
+  "function fulfill(bytes32 _requestId, bytes32 _manufacturer)",
+  "function getManufacturer(string vin) view returns (string)",
+  "function queryParams() view returns (string)",
+  "function requestManufacturerData(string vin)"
+]
