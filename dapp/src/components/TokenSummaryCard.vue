@@ -4,6 +4,10 @@
     <v-card-title>{{ currentTokenDetails.assetIdentifier }}</v-card-title>
     <v-card-text>
       <v-list-item>
+        <v-list-item-title>Owner</v-list-item-title>
+        <v-list-item-subtitle>{{ currentTokenDetails.owner }}</v-list-item-subtitle>
+      </v-list-item>
+      <v-list-item>
         <v-list-item-title>Manufacturer </v-list-item-title>
         <v-list-item-subtitle>{{ currentTokenDetails.manufacturer }}</v-list-item-subtitle>
       </v-list-item>
