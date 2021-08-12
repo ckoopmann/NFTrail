@@ -1,0 +1,14 @@
+[
+  "constructor()",
+  "event ChainlinkCancelled(bytes32 indexed id)",
+  "event ChainlinkFulfilled(bytes32 indexed id)",
+  "event ChainlinkRequested(bytes32 indexed id)",
+  "event OracleResultReceived(string vin, string path)",
+  "function basePath() view returns (string)",
+  "function baseURL() view returns (string)",
+  "function bytes32ToString(bytes32 _bytes32) pure returns (string)",
+  "function fulfill(bytes32 _requestId, bytes32 _manufacturer)",
+  "function getOracleResult(string vin, string path) view returns (string)",
+  "function queryParams() view returns (string)",
+  "function requestVehicleData(string vin, string path)"
+]

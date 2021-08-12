@@ -32,7 +32,7 @@ contract NFTrail is ERC721 {
     }
 
     function mintToken(address owner, string memory pictureCID, string memory assetIdentifier)
-    public
+    public virtual
     returns (uint256)
     {
         require(assetIdentifierIdMapping[assetIdentifier] == 0, "NFT for this identifier already minted");
@@ -82,10 +82,4 @@ contract NFTrail is ERC721 {
         author = assetData[tokenId].documents[documentIndex].author;
         creationTime = assetData[tokenId].documents[documentIndex].creationTime;
     }
-
-
-
-
-
-
 }
