@@ -47,7 +47,7 @@ contract VINApiConsumer is ChainlinkClient {
      * Create a Chainlink request to retrieve API response, find the target
      * data, then multiply by 1000000000000000000 (to remove decimal places from data).
      */
-    function requestManufacturerData(string memory vin, string memory path) public 
+    function requestVehicleData(string memory vin, string memory path) public 
     {
         Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
         string memory fullURL = string(abi.encodePacked(baseURL, vin, queryParams));
