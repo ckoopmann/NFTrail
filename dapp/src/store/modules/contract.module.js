@@ -1,7 +1,7 @@
 import { getCurrentProvider } from "./web3.module";
 import { ethers } from "ethers";
 
-const contractName = "NFTrail";
+const contractName = "CarToken";
 const abi = require(`../../contracts/abis/${contractName}.json`);
 const addresses = require(`../../contracts/addresses/${contractName}.json`);
 
@@ -183,11 +183,24 @@ const contractModule = {
           creationTime: creationTime.toNumber() * 1000,
         });
       }
+
+      const manufacturer = await nftContract.getOracleResult(
+        assetIdentifier,
+        "Manufacturer"
+      );
+      const make = await nftContract.getOracleResult(assetIdentifier, "Make");
+      const model = await nftContract.getOracleResult(assetIdentifier, "Model");
+      const modelYear = await nftContract.getOracleResult(assetIdentifier, "ModelYear");
+
       commit("setCurrentTokenDetails", {
         assetIdentifier,
         pictureURI,
         owner,
         documents,
+        manufacturer,
+        make, 
+        model,
+        modelYear,
       });
     },
 

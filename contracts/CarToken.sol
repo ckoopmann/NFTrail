@@ -16,6 +16,7 @@ contract CarToken is NFTrail, VINApiConsumer {
         requestVehicleData(vin, "Manufacturer");
         requestVehicleData(vin, "Make");
         requestVehicleData(vin, "Model");
+        requestVehicleData(vin, "ModelYear");
     }
 
 
