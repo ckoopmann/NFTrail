@@ -7,12 +7,13 @@ contract VINApiConsumer is ChainlinkClient {
   
     string public baseURL;
     string public queryParams;
+    string public basePath;
     
     address private oracle;
     bytes32 private jobId;
     uint256 private fee;
 
-    mapping(string => bytes32) vinToRequestId;
+    mapping(string => mapping(string => bytes32)) requestIdMapping;
     mapping(bytes32 => string) oracleResults;
 
     
@@ -31,13 +32,14 @@ contract VINApiConsumer is ChainlinkClient {
         fee = 0.01 * 10 ** 18; // (Varies by network and job)
         baseURL="https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/";
         queryParams="?format=json";
+        basePath="Results.0.";
     }
     
     /**
      * Create a Chainlink request to retrieve API response, find the target
      * data, then multiply by 1000000000000000000 (to remove decimal places from data).
      */
-    function requestManufacturerData(string memory vin) public 
+    function requestManufacturerData(string memory vin, string memory path) public 
     {
         Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
         string memory fullURL = string(abi.encodePacked(baseURL, vin, queryParams));
@@ -45,10 +47,10 @@ contract VINApiConsumer is ChainlinkClient {
         // Set the URL to perform the GET request on
         request.add("get", fullURL);
         
-        request.add("path", "Results[0].Manufacturer");
+        request.add("path", string(abi.encodePacked(basePath, path)));
         
         // Sends the request
-        vinToRequestId[vin] = sendChainlinkRequestTo(oracle, request, fee);
+        requestIdMapping[vin][path] = sendChainlinkRequestTo(oracle, request, fee);
     }
     
     /**
@@ -59,8 +61,8 @@ contract VINApiConsumer is ChainlinkClient {
         oracleResults[_requestId] = bytes32ToString(_manufacturer);
     }
 
-    function getManufacturer(string memory vin) public view returns(string memory){
-        return oracleResults[vinToRequestId[vin]];
+    function getOracleResult(string memory vin, string memory path) public view returns(string memory){
+        return oracleResults[requestIdMapping[vin][path]];
     }
 
     function bytes32ToString(bytes32 _bytes32) public pure returns (string memory) {
