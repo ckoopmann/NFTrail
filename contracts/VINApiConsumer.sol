@@ -13,8 +13,16 @@ contract VINApiConsumer is ChainlinkClient {
     bytes32 private jobId;
     uint256 private fee;
 
+    struct RequestData {
+        string vin;
+        string path;
+    }
+
     mapping(string => mapping(string => bytes32)) requestIdMapping;
+    mapping(bytes32 => RequestData) requestDataMapping;
     mapping(bytes32 => string) oracleResults;
+
+    event OracleResultReceived(string vin, string path);
 
     
     /**
@@ -50,7 +58,9 @@ contract VINApiConsumer is ChainlinkClient {
         request.add("path", string(abi.encodePacked(basePath, path)));
         
         // Sends the request
-        requestIdMapping[vin][path] = sendChainlinkRequestTo(oracle, request, fee);
+        bytes32 requestId = sendChainlinkRequestTo(oracle, request, fee);
+        requestIdMapping[vin][path] = requestId;
+        requestDataMapping[requestId] = RequestData(vin, path);
     }
     
     /**
@@ -59,6 +69,8 @@ contract VINApiConsumer is ChainlinkClient {
     function fulfill(bytes32 _requestId, bytes32 _manufacturer) public recordChainlinkFulfillment(_requestId)
     {
         oracleResults[_requestId] = bytes32ToString(_manufacturer);
+        RequestData memory requestData = requestDataMapping[_requestId];
+        emit OracleResultReceived(requestData.vin, requestData.path);
     }
 
     function getOracleResult(string memory vin, string memory path) public view returns(string memory){
