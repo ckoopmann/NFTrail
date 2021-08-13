@@ -1,6 +1,7 @@
 <template>
   <div v-if="currentTokenDetails != null">
     <TokenSummaryCard />
+    <OwnershipHistoryCard />
     <DocumentListCard />
     <UploadDocumentCard v-if="isOwner" />
   </div>
@@ -13,8 +14,10 @@ import { mapGetters } from "vuex";
 import TokenSummaryCard from "../components/TokenSummaryCard.vue";
 import UploadDocumentCard from "../components/UploadDocumentCard.vue";
 import DocumentListCard from "../components/DocumentListCard.vue";
+import OwnershipHistoryCard from "../components/OwnershipHistoryCard.vue";
+
 export default {
-  components: { TokenSummaryCard, UploadDocumentCard, DocumentListCard },
+  components: { TokenSummaryCard, UploadDocumentCard, DocumentListCard, OwnershipHistoryCard},
   computed: {
     ...mapGetters("contractModule",["currentTokenDetails"]),
     ...mapGetters("web3Module",["selectedAccount"]),
