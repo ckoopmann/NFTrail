@@ -2,6 +2,7 @@
   <div v-if="currentTokenDetails != null">
     <TokenSummaryCard />
     <OwnershipHistoryCard />
+    <TransferCard v-if="isOwner" />
     <DocumentListCard />
     <UploadDocumentCard v-if="isOwner" />
   </div>
@@ -15,12 +16,19 @@ import TokenSummaryCard from "../components/TokenSummaryCard.vue";
 import UploadDocumentCard from "../components/UploadDocumentCard.vue";
 import DocumentListCard from "../components/DocumentListCard.vue";
 import OwnershipHistoryCard from "../components/OwnershipHistoryCard.vue";
+import TransferCard from "../components/TransferCard.vue";
 
 export default {
-  components: { TokenSummaryCard, UploadDocumentCard, DocumentListCard, OwnershipHistoryCard},
+  components: {
+    TokenSummaryCard,
+    UploadDocumentCard,
+    DocumentListCard,
+    OwnershipHistoryCard,
+    TransferCard,
+  },
   computed: {
-    ...mapGetters("contractModule",["currentTokenDetails"]),
-    ...mapGetters("web3Module",["selectedAccount"]),
+    ...mapGetters("contractModule", ["currentTokenDetails"]),
+    ...mapGetters("web3Module", ["selectedAccount"]),
     isOwner() {
       if (this.currentTokenDetails == null) return false;
       console.log(
