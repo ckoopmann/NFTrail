@@ -1,9 +1,33 @@
 import { getCurrentProvider } from "./web3.module";
 import { ethers } from "ethers";
+import axios from "axios";
 
 const contractName = "CarToken";
 const abi = require(`../../contracts/abis/${contractName}.json`);
 const addresses = require(`../../contracts/addresses/${contractName}.json`);
+
+async function fetchOwnershipHistory(tokenId) {
+  const response = await axios.get(
+    `https://api.covalenthq.com/v1/80001/tokens/0x03e6Bc670d4ff706e93bBA83fE4f4d48a1AF9A97/nft_transactions/${tokenId}/?&key=ckey_8c8f3894d8df461da7d2e9a0557`
+  );
+  return response.data.data.items[0].nft_transactions
+    .map((transaction) => {
+      return transaction.log_events
+        .filter(
+          (event) =>
+            event.decoded?.name == "Transfer" &&
+            event.sender_address == "0x03e6bc670d4ff706e93bba83fe4f4d48a1af9a97"
+        )
+        .map((event) => {
+          return {
+            timestamp: event.block_signed_at,
+            from: event.decoded?.params[0].value,
+            to: event.decoded?.params[1].value,
+          };
+        });
+    })
+    .flat();
+}
 
 let nftContract;
 const contractModule = {
@@ -162,6 +186,8 @@ const contractModule = {
       ] = await nftContract.callStatic.getAssetData(tokenId);
       const numDocuments = numDocumentsRaw.toNumber();
       const documents = [];
+
+      // Load Document Data
       for (
         let documentIndex = 0;
         documentIndex < numDocuments;
@@ -184,13 +210,20 @@ const contractModule = {
         });
       }
 
+      // Load Oracle Responses
       const manufacturer = await nftContract.getOracleResult(
         assetIdentifier,
         "Manufacturer"
       );
       const make = await nftContract.getOracleResult(assetIdentifier, "Make");
       const model = await nftContract.getOracleResult(assetIdentifier, "Model");
-      const modelYear = await nftContract.getOracleResult(assetIdentifier, "ModelYear");
+      const modelYear = await nftContract.getOracleResult(
+        assetIdentifier,
+        "ModelYear"
+      );
+
+      // Load Transaction History
+      const ownershipHistory = await fetchOwnershipHistory(tokenId);
 
       commit("setCurrentTokenDetails", {
         assetIdentifier,
@@ -198,10 +231,28 @@ const contractModule = {
         owner,
         documents,
         manufacturer,
-        make, 
+        make,
         model,
         modelYear,
+        ownershipHistory,
       });
+    },
+
+    async transferToken({ rootGetters }, { tokenId, to }) {
+      const signer = rootGetters["web3Module/signer"];
+      const owner = rootGetters["web3Module/selectedAccount"];
+      console.log(`Transfering token ${tokenId} from ${owner} to ${to}`);
+      console.log("Using signer: ", signer);
+      if (signer !== undefined) {
+        const signerContract = nftContract.connect(signer);
+        const transferTx = await signerContract.transferFrom(
+          owner,
+          to,
+          tokenId
+        );
+        const result = await transferTx.wait();
+        console.log(`Token minted`, result);
+      }
     },
 
     async mintNFT({ rootGetters }, { pictureCID, assetIdentifier }) {

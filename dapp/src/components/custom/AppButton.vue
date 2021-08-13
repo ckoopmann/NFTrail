@@ -1,7 +1,7 @@
 <template>
-  <v-btn large rounded color="#36adb5" v-bind="attrs" v-on="on" to="dapp">
+  <v-btn large rounded color="#36adb5" to="dapp">
     <v-icon class="me-2" :size="20">mdi-play-circle-outline</v-icon>
-    <span v-if="!icon">Open App</span>
+    Open App
   </v-btn>
 </template>
 
