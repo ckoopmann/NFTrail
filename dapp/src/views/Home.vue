@@ -572,7 +572,7 @@ section {
                 },
                 "row5": {
                     "title": "Query Ownership History",
-                    "content": "The NFTrail Dapp uses Covalents API to efficiently query the transaction history of any Token",
+                    "content": "The NFTrail Dapp uses Covalents API to efficiently query the transaction history of the underlying asset tokens",
                     "action": "Learn more about Covalent"
                 },
                 "row6": {
