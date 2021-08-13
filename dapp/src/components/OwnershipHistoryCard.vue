@@ -12,8 +12,6 @@
               <v-list-item-subtitle>Time of Transfer: {{
                 new Date(element.timestamp).toLocaleString("en-GB")
               }}</v-list-item-subtitle>
-              <v-list-item-subtitle
-                  >Previous Owner: {{ element.from}}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </template>
