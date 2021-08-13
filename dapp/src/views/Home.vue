@@ -157,7 +157,7 @@
           class=""
         >
           <v-img
-            src="/assets/blind-justice.jpg"
+            src="/assets/chainlink.png"
             contain
             width="100%"
             max-height="320"
@@ -177,8 +177,103 @@
           >
             {{ $t("sections.about.row3.content") }}
           </p>
+          <div class="actions">
+            <v-btn
+              tile
+              large
+              depressed
+              color="primary"
+              href="https://chainlinklabs.com/"
+              >{{ $t("sections.about.row3.action") }}</v-btn
+            >
+          </div>
         </v-col>
       </v-row>
+
+      <v-row style="margin-top: 3.5rem" class="flex-row-reverse">
+        <v-col
+          :data-aos="pcOnly ? (isRtl ? 'fade-right' : 'fade-left') : 'fade-up'"
+          data-aos-duration="800"
+          :cols="pcOnly ? 5 : 14"
+          class=""
+        >
+          <v-img
+            src="/assets/polygon.png"
+            contain
+            width="100%"
+            max-height="340"
+          ></v-img>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col
+          :data-aos="pcOnly ? (isRtl ? 'fade-left' : 'fade-right') : 'fade-up'"
+          data-aos-duration="800"
+          class="mt-6 mt-lg-0"
+          :cols="pcOnly ? 6 : 14"
+        >
+          <h1 class="headline">{{ $t("sections.about.row4.title") }}</h1>
+          <p
+            class="medium-text text-light--text mt-6 mt-lg-8"
+            :class="{ 'text-center': phoneOnly }"
+          >
+            {{ $t("sections.about.row4.content") }}
+          </p>
+          <div class="actions">
+            <v-btn
+              @click="navigateToLink('#industrySection')"
+              tile
+              large
+              depressed
+              color="primary"
+              href="https://polygon.technology/"
+              >{{ $t("sections.about.row4.action") }}</v-btn
+            >
+          </div>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col
+          :data-aos="pcOnly ? (isRtl ? 'fade-left' : 'fade-right') : 'fade-up'"
+          data-aos-duration="800"
+          :cols="pcOnly ? 5 : 12"
+          class=""
+        >
+          <v-img
+            src="/assets/covalent.png"
+            contain
+            width="80%"
+            max-height="400"
+          ></v-img>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col
+          :data-aos="pcOnly ? (isRtl ? 'fade-right' : 'fade-left') : 'fade-up'"
+          data-aos-duration="800"
+          class="mt-6 mt-lg-0"
+          :cols="pcOnly ? 6 : 12"
+        >
+          <h1 class="headline">{{ $t("sections.about.row5.title") }}</h1>
+          <p
+            class="medium-text text-light--text mt-6 mt-lg-8"
+            :class="{ 'text-center': phoneOnly }"
+          >
+            {{ $t("sections.about.row5.content") }}
+          </p>
+          <div class="actions">
+            <v-btn
+              tile
+              large
+              depressed
+              color="primary"
+              href="https://www.covalenthq.com/"
+              >{{ $t("sections.about.row5.action") }}</v-btn
+            >
+          </div>
+        </v-col>
+      </v-row>
+
+
 
       <v-row style="margin-top: 3.5rem" class="flex-row-reverse">
         <v-col
@@ -201,15 +296,16 @@
           class="mt-6 mt-lg-0"
           :cols="pcOnly ? 6 : 12"
         >
-          <h1 class="headline">{{ $t("sections.about.row4.title") }}</h1>
+          <h1 class="headline">{{ $t("sections.about.row6.title") }}</h1>
           <p
             class="medium-text text-light--text mt-6 mt-lg-8"
             :class="{ 'text-center': phoneOnly }"
           >
-            {{ $t("sections.about.row4.content") }}
+            {{ $t("sections.about.row6.content") }}
           </p>
         </v-col>
       </v-row>
+
     </home-section>
 
     <cols-section
@@ -465,10 +561,21 @@ section {
                     "action": "Learn more about IPFS"
                 },
                 "row3": {
-                    "title": "Prove / Verify asset properties",
-                    "content": "Being immutable and publicly accesible the asset token including the associated Documents can be used to prove ownership and various other attributes of the underlying asset such as maintenance record etc."
+                    "title": "Off-Chain Verification of Asset Data",
+                    "content": "NFTrail uses Chainlink Oracles to call Off-Chain APIs for verification of asset specific metadata.",
+                    "action": "Learn more about Chainlink"
                 },
                 "row4": {
+                    "title": "Layer 2 Scalability",
+                    "content": "The smart contracts underlying NFTrail are deployed on Polygon Layer 2 (currently Mumbai Testnet) to ensure high transaction throughput and low gas fees.",
+                    "action": "Learn more about Polygon"
+                },
+                "row5": {
+                    "title": "Query Ownership History",
+                    "content": "The NFTrail Dapp uses Covalents API to efficiently query the transaction history of any Token",
+                    "action": "Learn more about Covalent"
+                },
+                "row6": {
                     "title": "Take your Token anywhere",
                     "content": "As a ERC-721 token you can use the NFTrail Token anywhere in the blockhain NFT-Ecosystem (OpenSea etc.)"
                 }
