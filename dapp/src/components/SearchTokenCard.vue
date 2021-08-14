@@ -7,7 +7,7 @@
           <v-col cols="12">
             <v-text-field
               v-model="assetIdentifier"
-              label="Asset identifier"
+              label="Vehicle Identification Number"
               required
             ></v-text-field>
           </v-col>

@@ -8,7 +8,7 @@
             <v-col cols="12">
               <v-text-field
                 v-model="assetIdentifier"
-                label="Asset identifier"
+                label="Vehicle Identification Number"
                 required
               ></v-text-field>
             </v-col>
@@ -17,7 +17,7 @@
             <v-col cols="8">
               <v-text-field
                 v-model="pictureCID"
-                label="CID of Asset picture"
+                label="CID of vehicle picture"
                 required
               ></v-text-field>
             </v-col>
