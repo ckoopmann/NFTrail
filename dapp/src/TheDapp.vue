@@ -83,8 +83,8 @@ export default {
       clipped: true,
       drawer: false,
       constantItems: [
-        { icon: "mdi-magnify", title: "Search Assets", to: "/dapp/search" },
-        { icon: "mdi-folder-plus", title: "New Asset Token", to: "/dapp/new" },
+        { icon: "mdi-magnify", title: "Search Vehicle", to: "/dapp/search" },
+        { icon: "mdi-plus-box", title: "Register New Vehicle", to: "/dapp/new" },
       ],
     };
   },
@@ -102,7 +102,7 @@ export default {
     ownedTokenItems() {
       return Object.entries(this.ownedIds).map(([id, data]) => {
         return {
-          icon: "mdi-folder",
+          icon: "mdi-car-outline",
           title: data.assetIdentifier,
           to: `/dapp/details/${id}`,
         };
